@@ -1,0 +1,122 @@
+{
+  "nav": {
+    "home": "Home",
+    "menu": "Menu",
+    "reservations": "Cart",
+    "experiences": "Occasions",
+    "contact": "Contact"
+  },
+  "hero": {
+    "tagline": "Home food from our kitchen",
+    "subtitle": "Fresh Homemade Salads and Dishes",
+    "cta_reserve": "Start Your Order",
+    "cta_menu": "Browse Dishes",
+    "scroll_hint": "Discover More"
+  },
+  "about": {
+    "label": "Our Story",
+    "body": "Um Anas Kitchen is a home kitchen dedicated to preparing all kinds of salads, pastries and whatever you can imagine, all made by Um Anas with original flavors and lots of love for the details. Try it once and you won’t forget it — we gladly take all kinds of orders, for every occasion and every home.",
+    "open_hours": "By pre-arranged order only",
+    "days": "Flexible during the week",
+    "location": "Tarshiha"
+  },
+  "menu": {
+    "title": "Menu",
+    "subtitle": "Um Anas Kitchen & Pastries",
+    "categories": {
+      "breakfast": "Breakfast Menu",
+      "mains": "Main Dishes",
+      "fish": "Fish",
+      "appetizers": "Appetizers",
+      "salads": "Salads",
+      "light": "Light Bites",
+      "italian": "Italian",
+      "extras": "Add-ons",
+      "drinks": "Drinks",
+      "juices": "Juices & Shakes",
+      "special_drinks": "Signature Drinks",
+      "desserts": "Desserts",
+      "hookah": "Hookah"
+    },
+    "price_unit": "₪",
+    "no_image": "Image coming soon",
+    "optional_note": "Image for reference only"
+  },
+  "reservations": {
+    "title": "Reserve",
+    "subtitle": "Provide your details and we'll find the best seats for you",
+    "party_size": "Party Size",
+    "date": "Date",
+    "time": "Time",
+    "name": "Full Name",
+    "phone": "Phone Number",
+    "notes": "Special Requests",
+    "notes_placeholder": "Special occasion? Any requests?",
+    "select_time": "Choose an available time slot:",
+    "guests_suffix": "Guests",
+    "guests_plus": "11+ Guests",
+    "book_now": "Book Now",
+    "booking_success": "Reservation confirmed! We'll be in touch soon.",
+    "booking_error": "Something went wrong. Please try again or contact us directly.",
+    "whatsapp_fallback": "Or reserve via WhatsApp",
+    "required_field": "This field is required",
+    "invalid_phone": "Invalid phone number"
+  },
+  "occasions": {
+    "title": "Occasions",
+    "headline": "Pre‑order catering for your occasion",
+    "subtitle": "If you have a wedding, birthday, family gathering or any special occasion — fill in the details here and we’ll get back to you to plan everything in advance.\nNote: for weddings we need at least 2 weeks’ notice, and for birthdays or smaller parties 2–3 days in advance depending on the number of guests.",
+    "occasion_type": "Occasion type",
+    "type_labels": {
+      "wedding": "Wedding / Engagement",
+      "birthday": "Birthday",
+      "corporate": "Company / Work event",
+      "other": "Other occasion"
+    },
+    "date": "Event date",
+    "guests": "Estimated number of guests",
+    "name": "Full name",
+    "name_placeholder": "Contact person for this order",
+    "phone": "Phone number for contact",
+    "phone_required_hint": "Please provide at least one valid phone number",
+    "phone_invalid_message": "Phone format is not valid. Examples: 0501234567, +972501234567 or +9720501234567",
+    "notes": "Extra details / requested food",
+    "notes_placeholder": "For example: salad buffet, hot pastries, number of trays, allergies, delivery location…",
+    "required_field": "This field is required",
+    "leadtime_wedding": "For weddings and engagements we kindly ask for at least 2 weeks’ notice so we can prepare everything properly.",
+    "leadtime_other": "For birthdays and smaller parties please try to book at least 2–3 days in advance depending on guest count.",
+    "urgent_note": "If your occasion is sooner than this, please contact us directly on WhatsApp — sometimes we can still help depending on kitchen load.",
+    "whatsapp_fallback": "Or send us a direct WhatsApp message with your occasion details",
+    "whatsapp_template": "Hi, my name is {name} and I’d like to order for an occasion ({occasion}) on {date} for about {guests} guests.",
+    "submit_error": "Something went wrong while sending your request. Please try again or contact us via WhatsApp.",
+    "cta_submit": "Send occasion request",
+    "submitting": "Sending your request…",
+    "success_title": "We received your occasion request ✨",
+    "success_body": "Thank you for trusting us. Um Anas will contact you soon to confirm details, portions and pricing."
+  },
+  "instagram": {
+    "title": "Find Us on Instagram",
+    "subtitle": "Follow our latest posts and offers",
+    "handle": "@beitna (coming soon)",
+    "follow": "Follow Us"
+  },
+  "footer": {
+    "tagline": "Homemade dishes from Beitna",
+    "contact_title": "Contact Us",
+    "phone": "+972-50-327-4101",
+    "location": "How to reach us?",
+    "waze": "Waze link",
+    "hours_title": "Order Preparation Times",
+    "hours": "Depends on quantity and order",
+    "days": "Agreed individually",
+    "social_title": "Follow Us",
+    "rights": "All rights reserved",
+    "designed_by": "Designed with love"
+  },
+  "common": {
+    "loading": "Loading...",
+    "lang_ar": "عربي",
+    "lang_he": "עברית",
+    "lang_en": "English"
+  }
+}
