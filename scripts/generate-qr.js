@@ -5,7 +5,7 @@ const sharp = require('sharp');
 
 async function main() {
   // URL that guests will open when scanning
-  const targetUrl = 'https://beitna.example.com/ar/menu';
+  const targetUrl = 'https://beitnaa.vercel.app';
 
   // Output directory and file
   const outDir = path.join(process.cwd(), 'qr-output');
@@ -35,20 +35,20 @@ async function main() {
     return;
   }
 
-  // Prepare logo on a rounded, glossy black tile with a thin gold border
-  const logoTileSize = 260;
-  const logoTile = await sharp({
+  // Prepare logo on a rounded tile with subtle glow.
+  // Tile size is smaller than the QR (≈ 25%) to avoid composite errors.
+  const logoTileSize = 220;
+  const logoTileBackground = await sharp({
     create: {
       width: logoTileSize,
       height: logoTileSize,
       channels: 4,
-      // soft background to match Beitna home style
-      background: { r: 255, g: 247, b: 235, alpha: 0.98 },
+      // black tile so golden logo pops
+      background: { r: 0, g: 0, b: 0, alpha: 1 },
     },
   })
     .png()
     .composite([
-      // subtle inner glow
       {
         input: Buffer.from(
           `<svg width="${logoTileSize}" height="${logoTileSize}" viewBox="0 0 ${logoTileSize} ${logoTileSize}" xmlns="http://www.w3.org/2000/svg">
@@ -66,11 +66,23 @@ async function main() {
         top: 0,
         left: 0,
       },
-      // centered logo
+    ])
+    .png()
+    .toBuffer();
+
+  // Resize logo to comfortably fit inside the tile
+  const resizedLogo = await sharp(logoPath)
+    .resize(Math.floor(logoTileSize * 0.7), Math.floor(logoTileSize * 0.7), {
+      fit: 'inside',
+    })
+    .png()
+    .toBuffer();
+
+  const logoTile = await sharp(logoTileBackground)
+    .composite([
       {
-        input: logoPath,
+        input: resizedLogo,
         gravity: 'center',
-        blend: 'over',
       },
     ])
     .png()
