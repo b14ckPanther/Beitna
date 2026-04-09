@@ -149,7 +149,7 @@ export default function Header({ locale }: { locale: string }) {
                           'w-full text-left px-4 py-2.5 text-sm transition-colors duration-200 block border-b border-gold/5 last:border-0',
                           lang.font,
                           locale === lang.code
-                            ? 'text-gold-DEFAULT bg-gold/5'
+                            ? (isLightLayout ? 'text-gold-dark bg-gold/5 font-black' : 'text-gold-DEFAULT bg-gold/5 font-black')
                             : isLightLayout ? 'text-obsidian hover:bg-gold/5' : 'text-cream/70 hover:text-cream hover:bg-white/5'
                         )}
                         dir={lang.code === 'ar' || lang.code === 'he' ? 'rtl' : 'ltr'}
