@@ -173,7 +173,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} <span lang="ar">بيتنا</span> | Beitna. {t('rights')}.
           </p>
           <p className="text-cream/25 text-xs">
-            {t('designed_by')} — Noor
+            Designed with love - DevLens Team
           </p>
         </div>
       </div>

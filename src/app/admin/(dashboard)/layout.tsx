@@ -7,10 +7,10 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
   if (!authed) redirect('/portal');
 
   return (
-    <div className="flex min-h-screen bg-obsidian">
+    <div className="flex min-h-screen bg-[#FDFCF9]">
       <AdminSidebar />
-      <main className="flex-1 ml-60 min-h-screen">
-        <div className="p-8">
+      <main className="flex-1 ml-64 min-h-screen">
+        <div className="p-10">
           {children}
         </div>
       </main>

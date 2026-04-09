@@ -62,11 +62,27 @@ export async function generateMetadata({
       title: 'بيتنا | Beitna',
     },
     icons: {
-      icon: '/logo.png?v=beitna1',
-      apple: '/logo.png?v=beitna1',
+      icon: [
+        { url: '/favicon.ico?v=beitna2' },
+        { url: '/icon-192.png?v=beitna2', sizes: '192x192', type: 'image/png' },
+      ],
+      apple: [
+        { url: '/apple-touch-icon.png?v=beitna2', sizes: '180x180', type: 'image/png' },
+      ],
+    },
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: 'default',
+      title: 'بيتنا',
+    },
+    formatDetection: {
+      telephone: false,
     },
     other: {
       'og:locale:alternate': ['ar_IL', 'he_IL', 'en_IL'],
+      'mobile-web-app-capable': 'yes',
+      'apple-mobile-web-app-capable': 'yes',
+      'apple-mobile-web-app-status-bar-style': 'default',
     },
   };
 }
@@ -95,8 +111,12 @@ export default async function LocaleLayout({
   const fontFamily = locale === 'ar' ? 'font-cairo' : locale === 'he' ? 'font-heebo' : 'font-ubuntu';
 
   return (
-    <html lang={locale} dir={dir} className={`${cairo.variable} ${ubuntu.variable} ${heebo.variable}`}>
-      <body className={`bg-obsidian text-cream ${fontFamily} antialiased`}>
+    <html lang={locale} dir={dir} className={`${cairo.variable} ${ubuntu.variable} ${heebo.variable}`} suppressHydrationWarning>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover" />
+        <meta name="theme-color" content="#FDFCF9" />
+      </head>
+      <body className={`bg-obsidian text-cream ${fontFamily} antialiased selection:bg-gold-DEFAULT/30`} suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
           <CartProvider>
             <Header locale={locale} />

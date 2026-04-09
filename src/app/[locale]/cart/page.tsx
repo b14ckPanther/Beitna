@@ -57,132 +57,143 @@ export default function CartPage() {
   }, [items, totalPrice, customerName, customerPhone, notes, locale, phoneError]);
 
   return (
-    <div className="min-h-screen bg-obsidian pt-24">
-      <div className="relative py-16 sm:py-20 text-center overflow-hidden">
+    <div className="min-h-screen bg-[#FDFCF9] pt-24">
+      <div className="relative py-16 sm:py-24 text-center overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at center top, rgba(201,165,106,0.07) 0%, transparent 60%)' }}
+          style={{ background: 'radial-gradient(ellipse at center top, rgba(201,165,106,0.08) 0%, transparent 70%)' }}
         />
         <div className="relative z-10 max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="h-px w-12 bg-gold-DEFAULT/30" />
-            <span className="section-label" lang="ar">
+            <div className="h-px w-12 bg-gold-dark/20" />
+            <span className="section-label !text-gold-dark font-black" lang="ar">
               سلة الطلبات
             </span>
-            <div className="h-px w-12 bg-gold-DEFAULT/30" />
+            <div className="h-px w-12 bg-gold-dark/20" />
           </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-cream/90 mb-4" lang="ar">
-            طلباتك
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-obsidian mb-6 tracking-tight" lang="ar">
+            طلباتك المختارة
           </h1>
-          <p className="text-cream/40 text-base max-w-md mx-auto" lang="ar">
-            أضف الأطباق التي تريدها من القائمة، ثم أرسل الطلب عبر واتساب لتأكيده مع بيتنا.
+          <p className="text-obsidian/60 text-lg max-w-2xl mx-auto font-medium" lang="ar">
+            أضف الأطباق التي تحب، ثم أرسل الطلب عبر واتساب لنبدأ التحضير لبيتك.
           </p>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 grid gap-8 lg:grid-cols-[2fr,1.2fr]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-32 grid gap-12 lg:grid-cols-[1.5fr,1fr]">
         {/* Items */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           {items.length === 0 ? (
-            <div className="glass-card p-6 text-center text-cream/40 text-sm" lang="ar">
-              السلة فارغة حالياً. ابدأ من صفحة القائمة وأضف الأطباق التي تريدها.
+            <div className="bg-white border border-gold/10 p-12 text-center text-obsidian/40 text-lg font-medium rounded-sm shadow-sm" lang="ar">
+              السلة فارغة حالياً. <br/>ارسم مائدتك من صفحة القائمة.
             </div>
           ) : (
             <>
-              {items.map((item) => {
-                const name =
-                  locale === 'he'
-                    ? item.name_he || item.name_ar
-                    : locale === 'en'
-                    ? item.name_en || item.name_ar
-                    : item.name_ar;
-                return (
-                  <div
-                    key={item.id}
-                    className="glass-card flex items-center justify-between gap-4 p-4 sm:p-5"
-                  >
-                    <div className="flex-1 text-right min-w-0">
-                      <p className="text-cream/90 font-semibold text-sm sm:text-base">
-                        <span lang="ar">{name}</span>
-                      </p>
-                      <p className="text-gold-DEFAULT text-xs mt-1">
-                        {item.price} ₪{' '}
-                        <span className="text-cream/40">× {item.quantity}</span>
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center border border-gold/25 rounded-sm overflow-hidden">
+              <div className="flex flex-col gap-4">
+                {items.map((item) => {
+                  const name =
+                    locale === 'he'
+                      ? item.name_he || item.name_ar
+                      : locale === 'en'
+                      ? item.name_en || item.name_ar
+                      : item.name_ar;
+                  return (
+                    <div
+                      key={item.id}
+                      className="bg-white border border-gold/10 flex items-center justify-between gap-6 p-5 sm:p-6 shadow-sm hover:shadow-md transition-all duration-300 rounded-sm relative group"
+                    >
+                      <div className="absolute top-0 left-0 bottom-0 w-1 bg-gold-dark scale-y-0 group-hover:scale-y-100 transition-transform origin-top" />
+                      <div className="flex-1 text-right min-w-0">
+                        <p className="text-obsidian font-black text-lg sm:text-xl mb-1">
+                          <span lang="ar">{name}</span>
+                        </p>
+                        <p className="text-gold-dark font-black text-lg">
+                          {item.price} ₪{' '}
+                          <span className="text-obsidian/30 text-xs font-medium">× {item.quantity}</span>
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-6">
+                        <div className="flex items-center border-2 border-gold/10 rounded-sm bg-gray-50/50">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              updateQuantity(item.id, Math.max(0, item.quantity - 1))
+                            }
+                            className="px-4 py-2 text-lg font-black text-gold-dark hover:bg-gold-dark hover:text-white transition-all"
+                          >
+                            -
+                          </button>
+                          <span className="px-5 py-2 text-sm font-black text-obsidian min-w-[3rem] text-center">
+                            {item.quantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            className="px-4 py-2 text-lg font-black text-gold-dark hover:bg-gold-dark hover:text-white transition-all"
+                          >
+                            +
+                          </button>
+                        </div>
                         <button
                           type="button"
-                          onClick={() =>
-                            updateQuantity(item.id, Math.max(0, item.quantity - 1))
-                          }
-                          className="px-2 py-1 text-sm text-cream/70 hover:bg-gold/10"
+                          onClick={() => removeItem(item.id)}
+                          className="text-[13px] font-black text-red-500/60 hover:text-red-600 transition-colors uppercase tracking-widest"
+                          lang="ar"
                         >
-                          -
-                        </button>
-                        <span className="px-3 py-1 text-xs text-cream/80">
-                          {item.quantity}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="px-2 py-1 text-sm text-cream/70 hover:bg-gold/10"
-                        >
-                          +
+                          إزالة
                         </button>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => removeItem(item.id)}
-                        className="text-[11px] text-cream/40 hover:text-red-400 transition-colors"
-                        lang="ar"
-                      >
-                        إزالة
-                      </button>
                     </div>
-                  </div>
-                );
-              })}
-              <div className="flex items-center justify-between text-xs text-cream/40 pt-2">
+                  );
+                })}
+              </div>
+              <div className="flex items-center justify-between p-6 border-t-2 border-gold/5 bg-white/50">
                 <button
                   type="button"
                   onClick={clear}
-                  className="text-red-400/70 hover:text-red-400 transition-colors"
+                  className="text-red-500 font-black text-xs uppercase tracking-widest hover:text-red-600 transition-colors"
                   lang="ar"
                 >
                   مسح السلة
                 </button>
-                <p lang="ar">
-                  المجموع: {totalItems} صنف / {totalPrice.toFixed(2)} ₪
-                </p>
+                <div className="text-right">
+                  <p className="text-obsidian/40 text-xs font-bold uppercase tracking-widest mb-1" lang="ar">المجموع الإجمالي</p>
+                  <p className="text-2xl font-black text-obsidian" lang="ar">
+                    {totalPrice.toFixed(2)} ₪
+                  </p>
+                </div>
               </div>
             </>
           )}
         </div>
 
         {/* Customer info + WhatsApp CTA */}
-        <div className="space-y-4">
-          <div className="glass-card p-5 space-y-4">
-            <h2 className="text-sm font-semibold text-cream/80 text-right" lang="ar">
-              تفاصيل التواصل
-            </h2>
-            <div className="space-y-3 text-right">
+        <div className="space-y-6">
+          <div className="bg-white border border-gold/15 p-8 space-y-8 shadow-[0_20px_50px_rgba(0,0,0,0.02)] rounded-sm relative">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gold-gradient" />
+            <div className="flex items-center justify-between border-b border-gold/5 pb-4">
+               <span className="text-[10px] font-black text-gold-dark uppercase tracking-[0.3em]">Details</span>
+               <h2 className="text-sm font-black text-obsidian/80 text-right uppercase tracking-widest" lang="ar">
+                 تفاصيل التواصل
+               </h2>
+            </div>
+            
+            <div className="space-y-6 text-right">
               <div>
-                <label className="block text-[11px] text-cream/40 mb-1" lang="ar">
-                  الاسم
+                <label className="block text-[11px] font-black uppercase tracking-widest text-gold-dark/60 mb-2" lang="ar">
+                  الاسم الكامل
                 </label>
                 <input
                   type="text"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   dir="rtl"
-                  className="w-full bg-obsidian-200 border border-gold/15 px-3 py-2 text-xs text-cream/80 placeholder:text-cream/25 outline-none focus:border-gold/40"
-                  placeholder="اكتب اسمك"
+                  className="w-full bg-gray-50 border border-gold/10 hover:border-gold/30 focus:border-gold/50 px-4 py-4 text-sm font-medium text-obsidian placeholder:text-obsidian/20 outline-none transition-all rounded-sm"
+                  placeholder="كيف نناديك؟"
                 />
               </div>
               <div>
-                <label className="block text-[11px] text-cream/40 mb-1" lang="ar">
+                <label className="block text-[11px] font-black uppercase tracking-widest text-gold-dark/60 mb-2" lang="ar">
                   رقم الهاتف
                 </label>
                 <input
@@ -190,28 +201,28 @@ export default function CartPage() {
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
                   dir="ltr"
-                  className={`w-full bg-obsidian-200 border px-3 py-2 text-xs text-cream/80 placeholder:text-cream/25 outline-none font-mono ${
-                    phoneError ? 'border-red-400/70 focus:border-red-400' : 'border-gold/15 focus:border-gold/40'
+                  className={`w-full border px-4 py-4 text-sm font-bold text-obsidian placeholder:text-obsidian/20 outline-none transition-all rounded-sm font-mono ${
+                    phoneError ? 'bg-red-50/30 border-red-200 focus:border-red-400' : 'bg-gray-50 border-gold/10 focus:border-gold/50'
                   }`}
-                  placeholder="+9725..."
+                  placeholder="05..."
                 />
                 {phoneError && (
-                  <p className="mt-1 text-[11px] text-red-400" lang="ar">
+                  <p className="mt-2 text-[11px] font-bold text-red-500" lang="ar">
                     {phoneError}
                   </p>
                 )}
               </div>
               <div>
-                <label className="block text-[11px] text-cream/40 mb-1" lang="ar">
+                <label className="block text-[11px] font-black uppercase tracking-widest text-gold-dark/60 mb-2" lang="ar">
                   ملاحظات إضافية
                 </label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   dir="rtl"
-                  rows={3}
-                  className="w-full bg-obsidian-200 border border-gold/15 px-3 py-2 text-xs text-cream/80 placeholder:text-cream/25 outline-none focus:border-gold/40 resize-none"
-                  placeholder="مثلاً: عدد الأشخاص، وقت التسليم، أي طلبات خاصة..."
+                  rows={4}
+                  className="w-full bg-gray-50 border border-gold/10 hover:border-gold/30 focus:border-gold/50 px-4 py-4 text-sm font-medium text-obsidian placeholder:text-obsidian/20 outline-none transition-all rounded-sm resize-none"
+                  placeholder="مثلاً: أي استفسار حول المكونات أو وقت التسليم..."
                 />
               </div>
             </div>
@@ -221,17 +232,19 @@ export default function CartPage() {
             href={items.length && !phoneError ? whatsappLink : '#'}
             target={items.length && !phoneError ? '_blank' : undefined}
             rel={items.length && !phoneError ? 'noopener noreferrer' : undefined}
-            className={`btn-gold block text-center py-4 text-sm font-bold tracking-[0.2em] rounded-sm uppercase ${
-              !items.length || phoneError ? 'opacity-40 cursor-not-allowed' : ''
+            className={`btn-gold block text-center py-5 text-sm font-black tracking-[0.3em] rounded-sm uppercase shadow-xl transition-all duration-300 ${
+              !items.length || phoneError ? 'opacity-30 grayscale cursor-not-allowed' : 'hover:shadow-gold/30 hover:-translate-y-1'
             }`}
           >
-            <span lang="ar">إرسال الطلب عبر واتساب</span>
+            <span lang="ar">تأكيد الطلب عبر واتساب</span>
           </a>
 
-          <p className="text-[11px] text-cream/35 text-right" lang="ar">
-            سيتم فتح واتساب مع رسالة جاهزة تحتوي على تفاصيل طلبك. بعد الإرسال، ستقوم بيتنا
-            بتأكيد الطلب معك يدوياً.
-          </p>
+          <div className="bg-gold/5 border-r-4 border-gold-dark p-6">
+            <p className="text-[12px] font-medium text-obsidian/60 leading-relaxed text-right" lang="ar">
+              سنقوم بتلقي طلبك فوراً وتأكيد التفاصيل معك يدوياً عبر واتساب. <br/>
+              <span className="text-gold-dark font-black">شكراً لاختيارك بيتنا!</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>

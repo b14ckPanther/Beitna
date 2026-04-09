@@ -50,12 +50,12 @@ export default function ContactSection() {
   ];
 
   return (
-    <section ref={ref} id="contact" className="relative py-28 sm:py-36 bg-obsidian overflow-hidden">
+    <section ref={ref} id="contact" className="relative py-28 sm:py-36 bg-[#FDFCF9] overflow-hidden">
       {/* Background effect */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-DEFAULT/20 to-transparent" />
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[400px] w-full"
-          style={{ background: 'radial-gradient(ellipse at center, rgba(201,165,106,0.03) 0%, transparent 70%)' }} />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-DEFAULT/40 to-transparent opacity-30" />
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[500px] w-full"
+          style={{ background: 'radial-gradient(ellipse at center, rgba(201,165,106,0.06) 0%, transparent 75%)' }} />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,35 +64,37 @@ export default function ContactSection() {
           <div
             className={`text-center mb-16 transition-all duration-1000 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
           >
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="h-px w-12 bg-gold-DEFAULT/30" />
-              <span className="section-label">{tNav('contact')}</span>
-              <div className="h-px w-12 bg-gold-DEFAULT/30" />
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="h-px w-10 bg-gold-DEFAULT/50" />
+              <span className="text-xs font-bold tracking-[0.4em] uppercase text-gold-dark/80">{tNav('contact')}</span>
+              <div className="h-px w-10 bg-gold-DEFAULT/50" />
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-cream/90 mb-4">
+            <h2 className="text-4xl sm:text-5xl font-black text-obsidian tracking-tight mb-6">
               {t('contact_title')}
             </h2>
-            <p className="text-cream/40 text-sm max-w-md mx-auto" lang="ar">
+            <p className="text-obsidian/50 text-base max-w-md mx-auto italic" lang="ar">
               للحجز أو الاستفسار، تواصل معنا عبر الهاتف أو واتساب
             </p>
           </div>
 
           {/* Contact Cards */}
           <div
-            className={`grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10 transition-all duration-1000 delay-200 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+            className={`grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12 transition-all duration-1000 delay-200 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
           >
             {contacts.map(({ icon: Icon, label, href, sublabel, dir, external }) => {
               const content = (
-                <div className="glass-card glass-card-hover text-center p-6 h-full flex flex-col items-center gap-4 group">
-                  <div className="w-12 h-12 rounded-full border border-gold/20 flex items-center justify-center group-hover:border-gold-DEFAULT group-hover:bg-gold/5 transition-all duration-300">
-                    <Icon size={16} className="text-gold-DEFAULT" strokeWidth={1.5} />
+                <div className="bg-white border border-gold/10 shadow-sm hover:shadow-xl hover:border-gold-DEFAULT text-center p-8 h-full flex flex-col items-center gap-5 group transition-all duration-500 rounded-sm">
+                  <div className="w-14 h-14 rounded-full bg-gold/5 border border-gold/10 flex items-center justify-center group-hover:bg-gold/10 transition-all duration-300">
+                    <Icon size={18} className="text-gold-dark" strokeWidth={2} />
                   </div>
                   <div>
-                    <p className="text-cream/80 text-sm font-medium" dir={dir}>{label}</p>
-                    <p className="text-cream/35 text-xs mt-1">{sublabel}</p>
+                    <p className="text-obsidian font-black text-base" dir={dir}>{label}</p>
+                    <p className="text-obsidian/40 text-[10px] uppercase tracking-widest mt-1.5 font-bold">{sublabel}</p>
                   </div>
                   {external && (
-                    <ExternalLink size={10} className="text-gold-DEFAULT/30 group-hover:text-gold-DEFAULT/60 transition-colors" />
+                    <div className="mt-auto">
+                      <ExternalLink size={12} className="text-gold-DEFAULT/40 group-hover:text-gold-dark transition-colors" />
+                    </div>
                   )}
                 </div>
               );
@@ -103,22 +105,23 @@ export default function ContactSection() {
                   href={href}
                   target={external ? '_blank' : undefined}
                   rel={external ? 'noopener noreferrer' : undefined}
+                  className="block h-full"
                 >
                   {content}
                 </a>
               ) : (
-                <div key={label}>{content}</div>
+                <div key={label} className="h-full">{content}</div>
               );
             })}
           </div>
 
           {/* Primary CTA Buttons */}
           <div
-            className={`flex flex-col sm:flex-row gap-4 justify-center transition-all duration-1000 delay-400 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+            className={`flex flex-col sm:flex-row gap-5 justify-center transition-all duration-1000 delay-400 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
           >
             <Link
               href="/experiences"
-              className="btn-gold px-8 py-4 text-sm font-bold tracking-[0.2em] rounded-sm uppercase text-center"
+              className="btn-gold px-10 py-5 text-sm font-bold tracking-[0.2em] rounded-sm uppercase text-center shadow-lg hover:-translate-y-1 transition-all"
             >
               <span lang="ar">مناسبات خاصة</span>
             </Link>
@@ -126,9 +129,9 @@ export default function ContactSection() {
               href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-outline-gold px-8 py-4 text-sm font-semibold tracking-wide rounded-sm uppercase text-center flex items-center justify-center gap-2.5"
+              className="px-10 py-5 text-sm font-bold tracking-[0.2em] border-2 border-gold-dark text-gold-dark hover:bg-gold-dark hover:text-white rounded-sm uppercase text-center flex items-center justify-center gap-3 transition-all duration-500 hover:-translate-y-1"
             >
-              <WhatsAppIcon size={15} />
+              <WhatsAppIcon size={18} />
               <span>WhatsApp</span>
             </a>
           </div>

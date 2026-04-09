@@ -17,18 +17,25 @@ export default function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-60 bg-obsidian-50 border-r border-gold/10 flex flex-col min-h-screen fixed left-0 top-0 bottom-0 z-30">
+    <aside className="w-64 bg-white border-r border-gold/15 flex flex-col min-h-screen fixed left-0 top-0 bottom-0 z-30 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
       {/* Logo */}
-      <div className="p-6 border-b border-gold/10 flex items-center gap-3">
-        <Image src="/logo.png?v=beitna1" alt="Beitna" width={52} height={52} className="object-contain" />
+      <div className="p-8 border-b border-gold/5 flex items-center gap-4 bg-[#FDFCF9]">
+        <div className="relative w-12 h-12">
+          <Image 
+            src="/logo.png?v=beitna1" 
+            alt="Beitna" 
+            fill 
+            className="object-contain brightness-[0.2] contrast-[1.5]" 
+          />
+        </div>
         <div>
-          <p className="text-sm font-bold text-cream/90">Beitna-بيتنا</p>
-          <p className="text-[10px] text-gold-DEFAULT tracking-widest uppercase">Admin Panel</p>
+          <p className="text-sm font-black text-obsidian tracking-tight uppercase">Beitna</p>
+          <p className="text-[10px] text-gold-dark font-black tracking-widest uppercase">Admin Panel</p>
         </div>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 p-4 space-y-1">
+      <nav className="flex-1 p-6 space-y-2 mt-4">
         {navItems.map(({ href, label, icon: Icon, exact }) => {
           const isActive = exact ? pathname === href : pathname.startsWith(href);
           return (
@@ -36,38 +43,41 @@ export default function AdminSidebar() {
               key={href}
               href={href}
               className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium transition-all duration-200 group',
+                'flex items-center gap-3 px-4 py-3.5 rounded-sm text-xs font-black tracking-widest uppercase transition-all duration-300 group relative',
                 isActive
-                  ? 'bg-gold/10 text-gold-DEFAULT border border-gold/20'
-                  : 'text-cream/50 hover:text-cream/80 hover:bg-white/5 border border-transparent'
+                  ? 'text-gold-dark bg-gold/5 border-l-4 border-gold-dark pl-3 shadow-sm'
+                  : 'text-obsidian/40 hover:text-obsidian hover:bg-gray-50'
               )}
             >
-              <Icon size={15} strokeWidth={1.5} className={isActive ? 'text-gold-DEFAULT' : 'text-cream/40 group-hover:text-cream/60'} />
+              <Icon size={16} strokeWidth={isActive ? 2.5 : 1.5} className={cn(
+                'transition-colors',
+                isActive ? 'text-gold-dark' : 'text-obsidian/20 group-hover:text-gold-dark/40'
+              )} />
               <span className="flex-1">{label}</span>
-              {isActive && <ChevronRight size={12} className="text-gold-DEFAULT/50" />}
+              {isActive && <div className="absolute right-3 w-1.5 h-1.5 rounded-full bg-gold-dark animate-pulse" />}
             </Link>
           );
         })}
       </nav>
 
       {/* Bottom actions */}
-      <div className="p-4 border-t border-gold/10 space-y-2">
+      <div className="p-6 border-t border-gold/5 space-y-3 bg-[#FDFCF9]">
         <a
           href="/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-3 px-3 py-2.5 text-sm text-cream/40 hover:text-cream/70 transition-colors duration-200 rounded-sm hover:bg-white/5"
+          className="flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-obsidian/40 hover:text-gold-dark transition-all duration-300 rounded-sm hover:bg-white border border-transparent hover:border-gold/10"
         >
-          <ExternalLink size={14} strokeWidth={1.5} />
-          <span>View Website</span>
+          <ExternalLink size={14} strokeWidth={2} />
+          <span>View Site</span>
         </a>
         <form action="/admin/logout" method="POST">
           <button
             type="submit"
-            className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400/60 hover:text-red-400 transition-colors duration-200 rounded-sm hover:bg-red-400/5"
+            className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-red-500/50 hover:text-red-600 transition-all duration-300 rounded-sm hover:bg-red-50 border border-transparent hover:border-red-100"
           >
-            <LogOut size={14} strokeWidth={1.5} />
-            <span>Sign Out</span>
+            <LogOut size={14} strokeWidth={2} />
+            <span>Terminate Session</span>
           </button>
         </form>
       </div>

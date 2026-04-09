@@ -187,19 +187,19 @@ export default async function EditMenuItemPage({ params }: { params: Promise<{ i
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <Link href="/admin/menu" className="text-cream/40 hover:text-cream/70 transition-colors">
-          <ArrowLeft size={16} strokeWidth={1.5} />
+    <div className="space-y-8">
+      <div className="flex items-center gap-4">
+        <Link href="/admin/menu" className="p-2 bg-white border border-gold/20 text-gold-dark hover:bg-gold-dark hover:text-white transition-all rounded-full shadow-sm">
+          <ArrowLeft size={18} strokeWidth={2.5} />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-cream/90">Edit Menu Item</h1>
-          <p className="text-cream/40 text-sm mt-0.5" dir="rtl">
+          <h1 className="text-2xl font-black text-obsidian tracking-tight">Edit Menu Item</h1>
+          <p className="text-obsidian/40 text-sm mt-0.5" dir="rtl">
             <span lang="ar">{item.name_ar}</span>
           </p>
         </div>
       </div>
-      <div className="glass-card p-6">
+      <div className="bg-white border border-gold/10 p-8 shadow-sm rounded-sm">
         <MenuItemForm
           categories={categories}
           item={item}

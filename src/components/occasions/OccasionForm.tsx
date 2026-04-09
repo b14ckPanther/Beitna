@@ -158,13 +158,13 @@ export default function OccasionForm() {
     return (
       <div className="max-w-3xl mx-auto min-h-[50vh] flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4">
-          <div className="w-20 h-20 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center mx-auto mb-6 animate-glow-pulse">
-            <CheckCircle size={32} className="text-gold-DEFAULT" strokeWidth={1.5} />
+          <div className="w-24 h-24 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center mx-auto mb-8 shadow-[0_0_40px_rgba(201,165,106,0.1)]">
+            <CheckCircle size={40} className="text-gold-dark" strokeWidth={1.5} />
           </div>
-          <h2 className="text-2xl font-black text-cream/90 mb-3" lang="ar">
+          <h2 className="text-3xl font-black text-obsidian mb-4" lang="ar">
             {t('success_title')}
           </h2>
-          <p className="text-cream/40 text-sm leading-relaxed" lang="ar">
+          <p className="text-obsidian/60 text-lg leading-relaxed font-medium" lang="ar">
             {t('success_body')}
           </p>
         </div>
@@ -173,27 +173,27 @@ export default function OccasionForm() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-8">
+    <div className="max-w-4xl mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-10">
         {/* Occasion & date */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <div>
-            <label className="block text-xs font-semibold tracking-widest uppercase text-cream/50 mb-3 text-right">
+            <label className="block text-xs font-black tracking-[0.2em] uppercase text-gold-dark/60 mb-5 text-right">
               <span className="flex items-center gap-2 justify-end">
                 {t('occasion_type')}
               </span>
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               {OCCASION_TYPES.map((opt) => (
                 <button
                   key={opt.value}
                   type="button"
                   onClick={() => setForm((f) => ({ ...f, occasion_type: opt.value }))}
                   className={cn(
-                    'px-3 py-2 text-xs rounded-sm border transition-colors text-right',
+                    'px-4 py-3 text-xs rounded-sm border transition-all duration-300 text-right uppercase tracking-widest font-black',
                     form.occasion_type === opt.value
-                      ? 'border-gold-DEFAULT bg-gold/10 text-gold-DEFAULT font-semibold'
-                      : 'border-gold/15 text-cream/70 hover:border-gold/35 hover:text-cream'
+                      ? 'border-gold-dark bg-gold-dark text-white shadow-lg shadow-gold/10'
+                      : 'border-gold/15 bg-white text-obsidian/60 hover:border-gold/40 hover:text-obsidian'
                   )}
                 >
                   <span lang="ar">{t(`type_labels.${opt.value}` as any)}</span>
@@ -203,21 +203,21 @@ export default function OccasionForm() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold tracking-widest uppercase text-cream/50 mb-3 text-right">
+            <label className="block text-xs font-black tracking-[0.2em] uppercase text-gold-dark/60 mb-5 text-right">
               <span className="flex items-center gap-2 justify-end">
                 {t('date')}
-                <Calendar size={12} strokeWidth={1.5} className="text-gold-DEFAULT" />
+                <Calendar size={14} strokeWidth={2} className="text-gold-dark" />
               </span>
             </label>
-            <div className="bg-obsidian-200 border border-gold/15 px-3 py-3 rounded-sm">
-              <div className="grid grid-cols-7 gap-1 text-[11px] text-cream/40 mb-2" dir="ltr">
+            <div className="bg-gray-50/50 border border-gold/10 p-4 rounded-sm shadow-inner">
+              <div className="grid grid-cols-7 gap-1 text-[11px] font-black text-gold-dark/40 mb-3" dir="ltr">
                 {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, idx) => (
                   <span key={`${d}-${idx}`} className="text-center">
                     {d}
                   </span>
                 ))}
               </div>
-              <div className="grid grid-cols-7 gap-1" dir="ltr">
+              <div className="grid grid-cols-7 gap-1.5" dir="ltr">
                 {Array.from({ length: 30 }).map((_, idx) => {
                   const d = addDays(todayDate, idx);
                   const iso = d.toISOString().split('T')[0];
@@ -231,12 +231,12 @@ export default function OccasionForm() {
                       disabled={!selectable}
                       onClick={() => selectable && setForm((f) => ({ ...f, date: iso }))}
                       className={cn(
-                        'h-8 text-[11px] rounded-sm border transition-colors flex items-center justify-center',
+                        'h-9 text-[11px] font-bold rounded-sm border transition-all flex items-center justify-center',
                         !selectable
-                          ? 'border-white/5 text-cream/15 cursor-not-allowed line-through'
+                          ? 'bg-transparent border-gray-100 text-gray-200 cursor-not-allowed'
                           : isSelected
-                            ? 'border-gold-DEFAULT bg-gold-DEFAULT text-obsidian font-bold'
-                            : 'border-gold/15 text-cream/70 hover:border-gold/40 hover:text-cream'
+                            ? 'border-gold-dark bg-gold-dark text-white font-black shadow-md'
+                            : 'bg-white border-gold/10 text-obsidian/70 hover:border-gold/40 hover:text-gold-dark'
                       )}
                     >
                       {day}
@@ -245,49 +245,50 @@ export default function OccasionForm() {
                 })}
               </div>
             </div>
-            <p className="text-cream/35 text-[11px] mt-1" lang="ar">
+            <p className="text-obsidian/40 text-[11px] mt-3 italic text-right" lang="ar">
               {t('urgent_note')}
             </p>
             {errors.date && (
-              <p className="text-red-400 text-xs mt-1 text-right" lang="ar">
+              <p className="text-red-500 font-bold text-xs mt-2 text-right" lang="ar">
                 {errors.date}
               </p>
             )}
           </div>
         </div>
 
-        {/* Guests */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Guests & Name */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <label className="block text-xs font-semibold tracking-widest uppercase text-cream/50 mb-3 text-right">
+            <label className="block text-xs font-black tracking-[0.2em] uppercase text-gold-dark/60 mb-4 text-right">
               <span className="flex items-center gap-2 justify-end">
                 {t('guests')}
-                <Users size={12} strokeWidth={1.5} className="text-gold-DEFAULT" />
+                <Users size={14} strokeWidth={2} className="text-gold-dark" />
               </span>
             </label>
-            <input
-              type="number"
-              min={1}
-              value={form.guests}
-              onChange={(e) => setForm({ ...form, guests: Number(e.target.value) || 0 })}
-              className={cn(
-                'w-full bg-obsidian-200 border px-4 py-3.5 text-sm text-cream/80 text-right transition-all duration-300 outline-none',
-                errors.guests ? 'border-red-500/50' : 'border-gold/15 hover:border-gold/35 focus:border-gold/50'
-              )}
-            />
+            <div className="relative">
+              <input
+                type="number"
+                min={1}
+                value={form.guests}
+                onChange={(e) => setForm({ ...form, guests: Number(e.target.value) || 0 })}
+                className={cn(
+                  'w-full bg-gray-50 border px-5 py-4 text-sm text-obsidian transition-all duration-300 outline-none font-bold rounded-sm',
+                  errors.guests ? 'border-red-300 bg-red-50/30' : 'border-gold/15 focus:border-gold/50 focus:bg-white focus:shadow-sm'
+                )}
+              />
+            </div>
             {errors.guests && (
-              <p className="text-red-400 text-xs mt-1 text-right" lang="ar">
+              <p className="text-red-500 font-bold text-xs mt-2 text-right" lang="ar">
                 {errors.guests}
               </p>
             )}
           </div>
 
-          {/* Name */}
           <div>
-            <label className="block text-xs font-semibold tracking-widest uppercase text-cream/50 mb-3 text-right">
+            <label className="block text-xs font-black tracking-[0.2em] uppercase text-gold-dark/60 mb-4 text-right">
               <span className="flex items-center gap-2 justify-end">
                 {t('name')}
-                <User size={12} strokeWidth={1.5} className="text-gold-DEFAULT" />
+                <User size={14} strokeWidth={2} className="text-gold-dark" />
               </span>
             </label>
             <input
@@ -296,13 +297,13 @@ export default function OccasionForm() {
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               dir="rtl"
               className={cn(
-                'w-full bg-obsidian-200 border px-4 py-3.5 text-sm text-cream/80 text-right placeholder:text-cream/20 transition-all duration-300 outline-none',
-                errors.name ? 'border-red-500/50' : 'border-gold/15 hover:border-gold/35 focus:border-gold/50'
+                'w-full bg-gray-50 border px-5 py-4 text-sm text-obsidian placeholder:text-obsidian/30 transition-all duration-300 outline-none rounded-sm font-medium',
+                errors.name ? 'border-red-300 bg-red-50/30' : 'border-gold/15 focus:border-gold/50 focus:bg-white focus:shadow-sm'
               )}
               placeholder={t('name_placeholder')}
             />
             {errors.name && (
-              <p className="text-red-400 text-xs mt-1 text-right" lang="ar">
+              <p className="text-red-500 font-bold text-xs mt-2 text-right" lang="ar">
                 {errors.name}
               </p>
             )}
@@ -311,10 +312,10 @@ export default function OccasionForm() {
 
         {/* Phone */}
         <div>
-          <label className="block text-xs font-semibold tracking-widest uppercase text-cream/50 mb-3 text-right">
+          <label className="block text-xs font-black tracking-[0.2em] uppercase text-gold-dark/60 mb-4 text-right">
             <span className="flex items-center gap-2 justify-end">
               {t('phone')}
-              <Phone size={12} strokeWidth={1.5} className="text-gold-DEFAULT" />
+              <Phone size={14} strokeWidth={2} className="text-gold-dark" />
             </span>
           </label>
           <input
@@ -323,13 +324,13 @@ export default function OccasionForm() {
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             dir="ltr"
             className={cn(
-              'w-full bg-obsidian-200 border px-4 py-3.5 text-sm text-cream/80 placeholder:text-cream/20 transition-all duration-300 outline-none font-mono',
-              errors.phone ? 'border-red-500/50' : 'border-gold/15 hover:border-gold/35 focus:border-gold/50'
+              'w-full bg-gray-50 border px-5 py-4 text-sm text-obsidian placeholder:text-obsidian/30 transition-all duration-300 outline-none font-bold rounded-sm',
+              errors.phone ? 'border-red-300 bg-red-50/30' : 'border-gold/15 focus:border-gold/50 focus:bg-white focus:shadow-sm'
             )}
-            placeholder="تأكد ان يكون الرقم صحيح"
+            placeholder="05..."
           />
           {errors.phone && (
-            <p className="text-red-400 text-xs mt-1 text-right" lang="ar">
+            <p className="text-red-500 font-bold text-xs mt-2 text-right" lang="ar">
               {errors.phone}
             </p>
           )}
@@ -337,46 +338,46 @@ export default function OccasionForm() {
 
         {/* Notes */}
         <div>
-          <label className="block text-xs font-semibold tracking-widest uppercase text-cream/50 mb-3 text-right">
+          <label className="block text-xs font-black tracking-[0.2em] uppercase text-gold-dark/60 mb-4 text-right">
             <span className="flex items-center gap-2 justify-end">
               {t('notes')}
-              <MessageSquare size={12} strokeWidth={1.5} className="text-gold-DEFAULT" />
+              <MessageSquare size={14} strokeWidth={2} className="text-gold-dark" />
             </span>
           </label>
           <textarea
             value={form.notes}
             onChange={(e) => setForm({ ...form, notes: e.target.value })}
-            rows={4}
+            rows={5}
             dir="rtl"
-            className="w-full bg-obsidian-200 border border-gold/15 hover:border-gold/35 focus:border-gold/50 px-4 py-3.5 text-sm text-cream/80 text-right placeholder:text-cream/20 transition-all duration-300 outline-none resize-none"
+            className="w-full bg-gray-50 border border-gold/15 focus:border-gold/50 focus:bg-white focus:shadow-sm px-5 py-4 text-sm text-obsidian placeholder:text-obsidian/30 transition-all duration-300 outline-none resize-none rounded-sm font-medium"
             placeholder={t('notes_placeholder')}
           />
         </div>
 
         {/* Error banner */}
         {status === 'error' && (
-          <div className="flex items-center gap-3 bg-red-500/5 border border-red-500/20 px-4 py-3 text-red-400 text-sm">
-            <AlertCircle size={14} />
+          <div className="flex items-center gap-3 bg-red-50 border border-red-100 px-6 py-4 text-red-600 text-sm font-bold rounded-sm shadow-sm animate-shake">
+            <AlertCircle size={16} />
             <span>{t('submit_error')}</span>
           </div>
         )}
 
         {/* Submit + WhatsApp helper */}
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between pt-2">
+        <div className="flex flex-col md:flex-row gap-6 items-center justify-between pt-6 border-t border-gold/5">
           <a
             href={whatsappFallback}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2.5 text-sm text-cream/40 hover:text-gold-DEFAULT transition-colors duration-300"
+            className="flex items-center gap-2.5 text-sm text-gold-dark/60 hover:text-gold-dark transition-all duration-300 font-bold group"
           >
-            <MessageSquare size={14} />
-            <span>{t('whatsapp_fallback')}</span>
+            <MessageSquare size={16} className="group-hover:scale-110 transition-transform" />
+            <span className="border-b border-transparent group-hover:border-gold-dark/30">{t('whatsapp_fallback')}</span>
           </a>
           <button
             type="submit"
             disabled={status === 'loading'}
             className={cn(
-              'btn-gold px-10 py-4 text-sm font-bold tracking-[0.2em] rounded-sm uppercase min-w-[220px] text-center',
+              'btn-gold px-14 py-5 text-sm font-black tracking-[0.2em] rounded-sm uppercase min-w-[280px] text-center shadow-xl shadow-gold/10 hover:shadow-gold/20 active:scale-[0.98]',
               status === 'loading' && 'opacity-70 cursor-not-allowed'
             )}
           >

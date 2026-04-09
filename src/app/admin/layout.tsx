@@ -23,8 +23,8 @@ export const metadata: Metadata = {
 
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" dir="ltr" className={`${cairo.variable} ${ubuntu.variable}`}>
-      <body className="font-ubuntu bg-obsidian text-cream antialiased">
+    <html lang="en" dir="ltr" className={`${cairo.variable} ${ubuntu.variable}`} suppressHydrationWarning>
+      <body className="font-ubuntu bg-[#FDFCF9] text-obsidian antialiased">
         {children}
       </body>
     </html>

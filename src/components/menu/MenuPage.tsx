@@ -7,7 +7,7 @@ import { useInView } from 'react-intersection-observer';
 import { cn } from '@/lib/utils';
 import type { MenuCategory, MenuItem } from '@/lib/supabase';
 import { useCart } from '@/components/cart/CartProvider';
-import { ImageOff, Flame, Sparkles, Star } from 'lucide-react';
+import { ImageOff, Flame, Sparkles, Star, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 
 function TagBadge({ tag }: { tag: MenuItem['tag'] }) {
   if (!tag) return null;
@@ -38,16 +38,17 @@ function MenuItemCard({
   onClick,
   onAdded,
   showAddButton = true,
+  isSalad,
 }: {
   item: MenuItemWithMeta;
   onClick?: () => void;
   onAdded?: (info: { name: string; price: number }) => void;
   showAddButton?: boolean;
+  isSalad?: boolean;
 }) {
-  const t = useTranslations('menu');
+  const [imgError, setImgError] = useState(false);
   const locale = useLocale();
   const { addItem } = useCart();
-  const [imgError, setImgError] = useState(false);
   const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true });
 
   const name = locale === 'he' ? (item.name_he || item.name_ar) : locale === 'en' ? (item.name_en || item.name_ar) : item.name_ar;
@@ -65,90 +66,213 @@ function MenuItemCard({
       ? 'انقر لاختيار الكمية'
       : null;
 
+  // Artisan Kitchen Logic
+  const itemIsSalad = isSalad || item.section?.includes('سلطات') || item.section?.toLowerCase().includes('salad');
+
   return (
     <div
       ref={ref}
       className={cn(
-        'glass-card glass-card-hover group transition-all duration-700 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/60',
-        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        'premium-card mini-tile-shadow flex flex-col transition-all duration-700 cursor-pointer group relative',
+        // Mobile dimensions (Definitive 2-across) vs Desktop
+        'w-[185px] sm:w-[240px] h-auto sm:h-[400px]',
+        'rounded-3xl sm:rounded-[2.5rem] overflow-hidden bg-white',
+        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 sm:translate-y-12'
       )}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : -1}
       onClick={onClick}
-      onKeyDown={(e) => {
-        if (!onClick) return;
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick();
-        }
-      }}
     >
-      <div className="relative aspect-[16/9] overflow-hidden bg-obsidian-200 border-b border-gold/8 flex items-center justify-center">
+      {/* Image Section */}
+      <div className="relative h-[120px] sm:h-[200px] w-full overflow-hidden bg-cream-100">
         {item.image_url && !imgError ? (
           <Image
-            src={item.image_url}
+            src={item.image_url as string}
             alt={name}
             fill
-            className="object-contain object-center bg-obsidian-200 transition-transform duration-700"
+            className="object-cover transition-transform duration-[1.5s] group-hover:scale-110"
             onError={() => setImgError(true)}
           />
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 opacity-20">
-            <ImageOff size={24} strokeWidth={1} className="text-gold-DEFAULT" />
-            <span className="text-[10px] text-cream/40 tracking-widest uppercase">{t('no_image')}</span>
+            <ImageOff strokeWidth={1} className="w-6 h-6 sm:w-8 sm:h-8 text-gold-DEFAULT" />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-obsidian/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        
+        {/* Floating Price Badge - Refined for Artisan Look */}
+        <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 group-hover:scale-110 transition-transform duration-500">
+          <div className="bg-white/90 backdrop-blur-md border border-gold/20 px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl flex flex-col items-center group-hover:bg-gold-DEFAULT group-hover:text-white transition-all duration-500 shadow-lg">
+             <div className="flex items-center gap-0.5 sm:gap-1">
+               <span className="text-xs sm:text-lg font-black leading-none text-obsidian">{itemIsSalad ? (locale === 'ar' ? 'يبدأ من' : 'Starts at') : ''} {item.price}</span>
+               <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-tighter text-obsidian/70">₪</span>
+             </div>
+          </div>
+        </div>
+
         {item.tag && (
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 scale-75 sm:scale-100 origin-top-left">
             <TagBadge tag={item.tag} />
           </div>
         )}
+
+        <div className="absolute inset-0 bg-gradient-to-t from-obsidian/20 via-transparent to-transparent opacity-40 group-hover:opacity-20 transition-opacity" />
       </div>
-      <div className="p-4 space-y-3">
-        <div className="flex items-start justify-end gap-3">
-          <div className="text-right flex-1 min-w-0">
-            <h3 className="text-cream/90 font-semibold text-base leading-snug">
-              {nameIsArabic ? <span lang="ar">{name}</span> : name}
-            </h3>
-            {locale === 'ar' && item.name_he && (
-              <p className="text-cream/25 text-xs mt-0.5 font-heebo" dir="rtl">
-                {item.name_he}
-              </p>
-            )}
-            {hintText && (
-              <p className="text-cream/40 text-[11px] mt-1" dir="rtl">
-                <span lang="ar">{hintText}</span>
-              </p>
-            )}
-          </div>
+
+      {/* Content Section */}
+      <div className="p-3 sm:p-5 pt-2 sm:pt-4 flex flex-col flex-1 text-right">
+        <div className="mb-1 sm:mb-2">
+          <h3 className="text-obsidian font-bold text-sm sm:text-base leading-tight group-hover:text-gold-DEFAULT transition-colors line-clamp-2 sm:line-clamp-1">
+            {nameIsArabic ? <span lang="ar">{name}</span> : name}
+          </h3>
+          {locale === 'ar' && item.name_he && (
+            <p className="hidden sm:block text-obsidian/30 text-[10px] mt-0.5 font-heebo line-clamp-1" dir="rtl">
+              {item.name_he}
+            </p>
+          )}
         </div>
+
+        {/* Description - Adjusted for 2-across mobile */}
         {desc && (
-          <p className="text-cream/40 text-xs leading-relaxed text-right line-clamp-2">
+          <p className="text-obsidian/50 text-[10px] sm:text-[11px] leading-relaxed line-clamp-2 min-h-[2.2rem] mb-2 font-medium">
             {descIsArabic ? <span lang="ar">{desc}</span> : desc}
           </p>
         )}
-        {showAddButton && (
-          <div className="flex justify-end pt-1">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                addItem({
-                  id: item.id,
-                  name_ar: item.name_ar,
-                  name_he: item.name_he,
-                  name_en: item.name_en,
-                  price: item.price,
-                });
-                onAdded?.({ name, price: item.price });
-              }}
-              className="px-3 py-1.5 text-[11px] font-semibold rounded-sm border border-gold/30 text-gold-DEFAULT hover:bg-gold/10 transition-colors"
-            >
-              <span lang="ar">أضف إلى السلة</span>
-            </button>
+
+        <div className="mt-auto flex items-center justify-between gap-1 sm:gap-3">
+          <div className="flex-1">
+            {hintText && (
+              <span className="text-gold-dark/60 text-[8px] uppercase font-bold tracking-[0.2em] block text-left" lang="ar">
+                {hintText}
+              </span>
+            )}
           </div>
-        )}
+          
+          {showAddButton && (
+            <button
+               type="button"
+               onClick={(e) => {
+                 e.stopPropagation();
+                 addItem({
+                   id: item.id,
+                   name_ar: item.name_ar,
+                   name_he: item.name_he,
+                   name_en: item.name_en,
+                   price: item.price,
+                 });
+                 onAdded?.({ name, price: item.price });
+               }}
+               className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-gold-dark/10 border border-gold-dark/40 text-obsidian hover:bg-gold-dark hover:text-white hover:scale-110 active:scale-90 transition-all duration-500 shadow-md"
+            >
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HorizontalProductRow({
+  label,
+  labelIsArabic,
+  children,
+}: {
+  label: string | null;
+  labelIsArabic: boolean;
+  children: React.ReactNode;
+}) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScroll = () => {
+    if (!scrollRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+    const isRTL = document.documentElement.dir === 'rtl';
+    
+    if (isRTL) {
+      setCanScrollRight(scrollLeft < 0);
+      setCanScrollLeft(Math.abs(scrollLeft) < scrollWidth - clientWidth - 5);
+    } else {
+      setCanScrollLeft(scrollLeft > 5);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  };
+
+  const scroll = (dir: 'left' | 'right') => {
+    if (!scrollRef.current) return;
+    const amount = scrollRef.current.clientWidth * 0.8;
+    scrollRef.current.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) {
+      checkScroll();
+      el.addEventListener('scroll', checkScroll);
+      window.addEventListener('resize', checkScroll);
+      return () => {
+        el.removeEventListener('scroll', checkScroll);
+        window.removeEventListener('resize', checkScroll);
+      };
+    }
+  }, []);
+
+  return (
+    <div className="relative group/row">
+      {label && (
+        <div className="flex flex-col items-center justify-center mb-10 sm:mb-16 px-4">
+          <div className="relative py-4 sm:py-6 px-12 sm:px-24 text-center group/header">
+            {/* Artisan Parchment Background - High Visibility */}
+            <div className="absolute inset-0 bg-gold/20 rounded-[3rem] rotate-2 scale-105 opacity-60 transition-transform duration-700" />
+            <div className="absolute inset-0 bg-[#F5E6CA] shadow-inner rounded-[2.5rem] -rotate-1 border-2 border-gold/10 transition-transform duration-700" />
+            
+            <h2 
+              className="relative text-3xl sm:text-5xl font-black text-obsidian tracking-wider sm:tracking-[0.2em] uppercase"
+              {...(labelIsArabic && { lang: 'ar' })}
+            >
+              {label}
+            </h2>
+          </div>
+        </div>
+      )}
+      
+      <div className="relative overflow-visible">
+        <button
+          type="button"
+          onClick={() => scroll('left')}
+          className={cn(
+            "absolute -left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 hidden lg:flex items-center justify-center rounded-full bg-white/90 backdrop-blur-xl border border-gold/30 text-gold-DEFAULT shadow-lg transition-all duration-300 hover:bg-gold-DEFAULT hover:text-white hover:scale-110 active:scale-95 disabled:opacity-0 disabled:pointer-events-none",
+            canScrollLeft ? "opacity-0 group-hover/row:opacity-100" : "opacity-0 pointer-events-none"
+          )}
+          disabled={!canScrollLeft}
+        >
+          <ChevronLeft size={22} />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => scroll('right')}
+          className={cn(
+            "absolute -right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 hidden lg:flex items-center justify-center rounded-full bg-white/90 backdrop-blur-xl border border-gold/30 text-gold-DEFAULT shadow-lg transition-all duration-300 hover:bg-gold-DEFAULT hover:text-white hover:scale-110 active:scale-95 disabled:opacity-0 disabled:pointer-events-none",
+            canScrollRight ? "opacity-0 group-hover/row:opacity-100" : "opacity-0 pointer-events-none"
+          )}
+          disabled={!canScrollRight}
+        >
+          <ChevronRight size={22} />
+        </button>
+
+        <div
+          ref={scrollRef}
+          onScroll={checkScroll}
+          className="flex gap-3 sm:gap-8 overflow-x-auto snap-x-mandatory custom-scrollbar-h pb-6 sm:pb-12 scroll-smooth scrollbar-hide sm:scrollbar-default px-1 sm:px-4"
+          style={{ scrollPaddingLeft: '1rem', scrollPaddingRight: '1rem' }}
+        >
+          {children}
+        </div>
+        
+        <div className="absolute left-0 top-0 bottom-8 w-12 bg-gradient-to-r from-cream to-transparent pointer-events-none opacity-0 h-full sm:group-hover/row:opacity-100 transition-opacity z-10" />
+        <div className="absolute right-0 top-0 bottom-8 w-12 bg-gradient-to-l from-cream to-transparent pointer-events-none opacity-0 h-full sm:group-hover/row:opacity-100 transition-opacity z-10" />
       </div>
     </div>
   );
@@ -156,21 +280,20 @@ function MenuItemCard({
 
 function SectionedGrid({
   items,
-  cols = 2,
   onItemClick,
   showAddButton = true,
   onItemAdded,
+  isSalad,
 }: {
   items: MenuItemWithMeta[];
-  cols?: 2 | 3;
   onItemClick?: (item: MenuItem) => void;
   showAddButton?: boolean;
   onItemAdded?: (info: { name: string; price: number }) => void;
+  isSalad?: boolean;
 }) {
   const locale = useLocale();
   const sorted = [...items].sort((a, b) => a.sort_order - b.sort_order);
 
-  // Group consecutive items by section label
   const groups: { label: string | null; items: MenuItem[] }[] = [];
   for (const item of sorted) {
     const label = item.section ?? null;
@@ -184,7 +307,7 @@ function SectionedGrid({
 
   const sectionLabel = (label: string) => {
     if (label === 'بارد') return { ar: 'مشروبات باردة', he: 'שתייה קרה', en: 'Cold Drinks' };
-    if (label === 'ساخن') return { ar: 'مشروبات ساخنة', he: 'שתייה חמה', en: 'Hot Drinks' };
+    if (label === 'ساخن') return { ar: 'مشروبات ساخنة', he: 'שתייה חمة', en: 'Hot Drinks' };
     return { ar: label, he: label, en: label };
   };
 
@@ -195,36 +318,32 @@ function SectionedGrid({
   const labelIsArabic = (label: string) => /[\u0600-\u06FF]/.test(getLabel(label));
 
   return (
-    <div className="space-y-10">
-      {groups.map((group, idx) => (
-        <div key={idx}>
-          {group.label && (
-            <div className="flex items-center justify-center sm:justify-between gap-4 mb-6">
-              <div className="h-px flex-1 bg-gradient-to-r from-gold/15 to-transparent hidden sm:block" />
-              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-gold-DEFAULT/60 px-3 py-1 border border-gold/15 rounded-sm text-center" {...(labelIsArabic(group.label) && { lang: 'ar' })}>
-                {getLabel(group.label)}
-              </span>
-              <div className="h-px flex-1 bg-gradient-to-l from-gold/15 to-transparent hidden sm:block" />
-            </div>
-          )}
-          <div
-            className={cn(
-              'grid gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4',
-              cols === 3 ? 'grid-cols-3' : 'grid-cols-2'
-            )}
+    <div className="space-y-14 sm:space-y-24">
+      {groups.map((group, idx) => {
+        const labelText = group.label ? getLabel(group.label) : null;
+        // Salads detection based on label content
+        const isSaladRow = labelText?.includes('سلطات') || labelText?.toLowerCase().includes('salad');
+        
+        return (
+          <HorizontalProductRow
+            key={idx}
+            label={labelText}
+            labelIsArabic={group.label ? labelIsArabic(group.label) : false}
           >
             {group.items.map((item) => (
-              <MenuItemCard
-                key={item.id}
-                item={item}
-                onClick={onItemClick ? () => onItemClick(item) : undefined}
-                onAdded={onItemAdded}
-                showAddButton={showAddButton}
-              />
+              <div key={item.id} className="flex-shrink-0 snap-center sm:snap-start py-2 sm:py-4">
+                <MenuItemCard
+                  item={item}
+                  onClick={onItemClick ? () => onItemClick(item) : undefined}
+                  onAdded={onItemAdded}
+                  showAddButton={showAddButton}
+                  isSalad={isSaladRow || isSalad}
+                />
+              </div>
             ))}
-          </div>
-        </div>
-      ))}
+          </HorizontalProductRow>
+        );
+      })}
     </div>
   );
 }
@@ -295,9 +414,6 @@ function VariantGrid({
     return match ? match[1].trim() : t('optional_note');
   };
 
-  const getNameForLocale = (item: MenuItem) =>
-    locale === 'he' ? (item.name_he || item.name_ar) : locale === 'en' ? (item.name_en || item.name_ar) : item.name_ar;
-
   useEffect(() => {
     if (!lastAddedKey) return;
     const timer = setTimeout(() => setLastAddedKey(null), 900);
@@ -305,15 +421,15 @@ function VariantGrid({
   }, [lastAddedKey]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {groups.map((group) => (
-        <div key={group.baseName} className="glass-card glass-card-hover p-5 sm:p-6">
+        <div key={group.baseName} className="bg-cream-100/50 rounded-2xl p-5 border border-gold/5 shadow-sm">
           <div className="flex items-center justify-between gap-3 mb-4">
-            <h3 className="text-cream/90 font-semibold text-base sm:text-lg" lang="ar">
+            <h3 className="text-obsidian font-bold text-base sm:text-lg" lang="ar">
               {group.baseName}
             </h3>
           </div>
-          <div className="flex flex-wrap gap-3 justify-end">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {(() => {
               const uniqueVariants = Array.from(
                 new Map(
@@ -322,43 +438,60 @@ function VariantGrid({
                     return [key, v] as const;
                   }),
                 ).values(),
-              ).sort((a, b) => a.sort_order - b.sort_order);
+              );
 
-              return uniqueVariants.map((variant) => {
-                const key = `${group.baseName}-${getVariantLabel(variant)}-${variant.price}`;
-                const isActive = lastAddedKey === key;
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => {
-                      addItem({
-                        id: variant.id,
-                        name_ar: variant.name_ar,
-                        name_he: variant.name_he,
-                        name_en: variant.name_en,
-                        price: variant.price,
-                      });
-                      onAdded?.({
-                        name: `${group.baseName} (${getVariantLabel(variant)})`,
-                        price: variant.price,
-                      });
-                      setLastAddedKey(key);
-                    }}
-                    className={cn(
-                      'px-3 py-2 text-[11px] sm:text-xs rounded-sm border flex items-center gap-2 transition-colors duration-200',
-                      isActive
-                        ? 'bg-gold-DEFAULT text-obsidian border-gold-DEFAULT'
-                        : 'border-gold/30 text-gold-DEFAULT hover:bg-gold/10',
-                    )}
-                  >
-                    <span lang="ar">{getVariantLabel(variant)}</span>
-                    <span className={cn('text-[11px]', isActive ? 'text-obsidian/80' : 'text-cream/60')}>
-                      {variant.price} ₪
-                    </span>
-                  </button>
-                );
-              });
+              const sizeOrder: Record<string, number> = {
+                'صغير': 1,
+                'وسط': 2,
+                'كبير': 3,
+                'كبير جداً': 4,
+              };
+
+              return uniqueVariants
+                .sort((a, b) => {
+                  const labelA = getVariantLabel(a);
+                  const labelB = getVariantLabel(b);
+                  const orderA = sizeOrder[labelA];
+                  const orderB = sizeOrder[labelB];
+                  if (orderA !== undefined && orderB !== undefined) return orderA - orderB;
+                  return a.sort_order - b.sort_order;
+                })
+                .map((variant) => {
+                  const key = `${group.baseName}-${getVariantLabel(variant)}-${variant.price}`;
+                  const isActive = lastAddedKey === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => {
+                        addItem({
+                          id: variant.id,
+                          name_ar: variant.name_ar,
+                          name_he: variant.name_he,
+                          name_en: variant.name_en,
+                          price: variant.price,
+                        });
+                        onAdded?.({
+                          name: `${group.baseName} (${getVariantLabel(variant)})`,
+                          price: variant.price,
+                        });
+                        setLastAddedKey(key);
+                      }}
+                      className={cn(
+                        'px-4 py-3.5 text-xs sm:text-sm rounded-2xl border-2 flex items-center justify-between transition-all duration-300 w-full',
+                        isActive
+                          ? 'bg-gold-DEFAULT text-white border-gold-DEFAULT shadow-md scale-[1.02]'
+                          : 'bg-white border-gold/15 text-obsidian hover:border-gold/40 hover:bg-gold/5',
+                      )}
+                    >
+                      <span className="font-bold whitespace-nowrap" lang="ar">{getVariantLabel(variant)}</span>
+                      <div className={cn('h-4 w-px mx-2', isActive ? 'bg-white/30' : 'bg-gold/20')} />
+                      <span className={cn('font-black whitespace-nowrap', isActive ? 'text-white' : 'text-gold-dark')}>
+                        {variant.price} ₪
+                      </span>
+                    </button>
+                  );
+                });
             })()}
           </div>
         </div>
@@ -446,8 +579,8 @@ export default function MenuPage({ categories }: Props) {
     setActiveCategory(catId);
     const el = sectionRefs.current[catId];
     if (el) {
-      // Offset for fixed header (taller after bigger logo) + sticky category nav
-      const offset = 160;
+      // Offset for fixed header (~112-136px) + sticky category nav (~50px)
+      const offset = 200;
       const top = el.getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({ top, behavior: 'smooth' });
     }
@@ -480,32 +613,32 @@ export default function MenuPage({ categories }: Props) {
 
   if (mergedCategories.length === 0) {
     return (
-      <div className="min-h-screen bg-obsidian pt-24 flex items-center justify-center">
+      <div className="min-h-screen bg-cream pt-24 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-cream/30 text-sm">{t('subtitle')}</p>
+          <p className="text-obsidian/30 text-sm">{t('subtitle')}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-obsidian pt-24">
-      {/* Page Header — section label only (no duplicate title), centered on mobile */}
-      <div className="relative pt-16 pb-24 sm:pt-20 sm:pb-28 overflow-hidden">
+    <div className="min-h-screen bg-cream pt-24">
+      {/* Page Header — Artisan Saffron & Sage Flare */}
+      <div className="relative pt-16 pb-20 sm:pt-20 sm:pb-24 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at center top, rgba(201,165,106,0.06) 0%, transparent 60%)' }} />
+          style={{ background: 'radial-gradient(ellipse at center top, rgba(201,165,106,0.12) 0%, transparent 60%)' }} />
         <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-4 mb-10">
-            <div className="h-px w-12 bg-gold-DEFAULT/30" />
-            <span className="section-label">{t('title')}</span>
-            <div className="h-px w-12 bg-gold-DEFAULT/30" />
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <div className="h-px w-10 sm:w-16 bg-gold-DEFAULT/40" />
+            <span className="text-xs font-bold tracking-[0.4em] uppercase text-gold-dark/70">{t('title')}</span>
+            <div className="h-px w-10 sm:w-16 bg-gold-DEFAULT/40" />
           </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-cream/90 mb-4 text-center">{t('subtitle')}</h1>
+          <h1 className="text-4xl sm:text-6xl font-black text-obsidian mb-4 text-center tracking-tight leading-tight">{t('subtitle')}</h1>
         </div>
       </div>
 
-      {/* Sticky Category Nav */}
-      <div className="sticky top-[90px] sm:top-[70px] z-40 bg-obsidian/95 backdrop-blur-xl border-y border-gold/8">
+      {/* Sticky Category Nav — Artisan Glass */}
+      <div className="sticky top-[112px] lg:top-[136px] z-40 bg-white/95 shadow-md backdrop-blur-xl border-y border-gold/10">
         <div ref={navRef} className="menu-scroll flex overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
           <div className="flex items-center px-4 gap-1 py-1 min-w-max mx-auto">
             {mergedCategories.map((cat) => (
@@ -514,10 +647,10 @@ export default function MenuPage({ categories }: Props) {
                 data-cat={cat.id}
                 onClick={() => scrollToCategory(cat.id)}
                 className={cn(
-                  'px-4 py-3 text-sm font-medium whitespace-nowrap transition-all duration-300 border-b-2',
+                  'px-6 py-2.5 text-sm font-bold whitespace-nowrap transition-all duration-500 rounded-full',
                   activeCategory === cat.id
-                    ? 'text-gold-DEFAULT border-gold-DEFAULT'
-                    : 'text-cream/50 border-transparent hover:text-cream/80 hover:border-gold/30'
+                    ? 'bg-gold-dark text-white shadow-lg scale-105'
+                    : 'text-obsidian/50 hover:text-obsidian/70 hover:bg-gold/10'
                 )}
                 {...(/[\u0600-\u06FF]/.test(getCategoryName(cat)) && { lang: 'ar' })}
               >
@@ -549,15 +682,17 @@ export default function MenuPage({ categories }: Props) {
               key={category.id}
               id={category.id}
               ref={(el) => { sectionRefs.current[category.id] = el; }}
-              className="scroll-mt-[180px]"
+              className="scroll-mt-[210px] relative"
             >
-              <div className="mb-8 w-full" dir="ltr" style={{ textAlign: 'center' }}>
-                <div className="flex items-center justify-center gap-3">
-                  <div className="w-2 h-2 bg-gold-DEFAULT rotate-45 flex-shrink-0" />
-                  <h2 className="text-2xl sm:text-3xl font-black text-cream/90" style={{ textAlign: 'center' }} {...(/[\u0600-\u06FF]/.test(getCategoryName(category)) && { lang: 'ar' })}>{getCategoryName(category)}</h2>
+              {/* Distinct Artisan Divider */}
+              <div className="absolute -top-10 left-0 right-0 flex items-center justify-center opacity-20 pointer-events-none">
+                <div className="h-px w-full bg-gradient-to-r from-transparent via-gold-dark to-transparent" />
+                <div className="absolute bg-cream px-4">
+                  <div className="w-1.5 h-1.5 rounded-full bg-gold-DEFAULT" />
                 </div>
-                <div className="h-px mt-2 bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
               </div>
+
+              <div className="mb-0" />
               {(() => {
                 const isVariantCat = isVariantCategory(category);
                 const baseItems = isVariantCat ? getBaseItemsForCategory(availableItems) : availableItems;
@@ -579,9 +714,9 @@ export default function MenuPage({ categories }: Props) {
                 return (
                   <SectionedGrid
                     items={itemsForGrid}
-                    cols={2}
                     onItemClick={(item) => setSelectedItem(item)}
                     showAddButton={!isVariantCat}
+                    isSalad={getCategoryName(category).includes('سلطات') || getCategoryName(category).toLowerCase().includes('salad')}
                   />
                 );
               })()}
@@ -590,45 +725,45 @@ export default function MenuPage({ categories }: Props) {
         })}
       </div>
 
-      {/* Item Details Dialog */}
+      {/* Item Details Dialog - Next Level Artisan Redesign */}
       {selectedItem && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-obsidian/40"
           onClick={() => setSelectedItem(null)}
         >
           <div
-            className="relative max-w-lg w-full max-h-[80vh] overflow-y-auto glass-card border border-gold/20"
+            className="relative max-w-xl w-full max-h-[90vh] overflow-y-auto bg-cream rounded-[2.5rem] shadow-[0_32px_128px_rgba(0,0,0,0.3)] border border-gold/10 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              type="button"
-              className="absolute top-3 left-3 text-cream/60 hover:text-cream/90 text-sm"
-              onClick={() => setSelectedItem(null)}
-            >
-              ✕
-            </button>
-            <div className="relative aspect-[16/9] bg-obsidian-200 border-b border-gold/10 flex items-center justify-center">
+            {/* Modal Header/Image */}
+            <div className="relative h-[250px] sm:h-[350px] w-full overflow-hidden">
+              <button
+                type="button"
+                className="absolute top-6 left-6 w-10 h-10 flex items-center justify-center bg-white/80 backdrop-blur-md rounded-full text-obsidian hover:bg-gold-DEFAULT hover:text-white transition-all duration-300 z-10 shadow-sm"
+                onClick={() => setSelectedItem(null)}
+              >
+                ✕
+              </button>
               {selectedItem.image_url ? (
                 <Image
                   src={selectedItem.image_url}
                   alt={selectedItem.name_ar}
                   fill
-                  className="object-contain object-center bg-obsidian-200"
+                  className="object-cover"
                 />
               ) : (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-cream/25">
-                  <ImageOff size={24} strokeWidth={1} className="text-gold-DEFAULT" />
-                  <span className="text-[10px] tracking-widest uppercase">{t('no_image')}</span>
+                <div className="absolute inset-0 bg-cream-50 flex flex-col items-center justify-center gap-2 text-obsidian/20">
+                  <ImageOff size={48} strokeWidth={1} className="text-gold-DEFAULT/40" />
+                  <span className="text-xs tracking-widest uppercase">{t('no_image')}</span>
                 </div>
               )}
+              {/* Gradient Scrim */}
+              <div className="absolute inset-0 bg-gradient-to-t from-cream via-transparent to-transparent opacity-80" />
             </div>
-            <div className="p-5 space-y-3">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-shrink-0 text-left">
-                  <span className="text-gold-DEFAULT font-bold text-xl">{selectedItem.price}</span>
-                  <span className="text-gold-DEFAULT/60 text-sm ml-0.5">₪</span>
-                </div>
-                <div className="text-right flex-1 min-w-0">
+
+            <div className="relative -mt-10 px-6 sm:px-10 pb-10 space-y-6">
+              <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4">
+                <div className="text-center sm:text-right flex-1">
                   {(() => {
                     const name =
                       locale === 'he'
@@ -636,26 +771,28 @@ export default function MenuPage({ categories }: Props) {
                         : locale === 'en'
                         ? selectedItem.name_en || selectedItem.name_ar
                         : selectedItem.name_ar;
-                    const nameIsArabic =
-                      locale === 'ar' ||
-                      (locale === 'he' && !selectedItem.name_he) ||
-                      (locale === 'en' && !selectedItem.name_en);
                     return (
-                      <h2 className="text-cream/95 font-semibold text-lg leading-snug">
-                        {nameIsArabic ? <span lang="ar">{name}</span> : name}
+                      <h2 className="text-3xl font-black text-obsidian leading-tight">
+                        <span lang="ar">{name}</span>
                       </h2>
                     );
                   })()}
                   {locale === 'ar' && selectedItem.name_he && (
-                    <p className="text-cream/30 text-xs mt-0.5 font-heebo" dir="rtl">
+                    <p className="text-obsidian/40 text-sm mt-1 font-heebo" dir="rtl">
                       {selectedItem.name_he}
                     </p>
                   )}
                 </div>
+                <div className="bg-white/80 backdrop-blur-sm border-2 border-gold/20 px-5 py-2.5 rounded-2xl flex flex-col items-center shadow-sm">
+                   <div className="flex items-baseline gap-1">
+                     <span className="text-2xl font-black text-obsidian leading-none">{selectedItem.price}</span>
+                     <span className="text-xs font-bold text-gold-dark uppercase tracking-tighter">₪</span>
+                   </div>
+                </div>
               </div>
 
               {selectedItem.desc_ar || selectedItem.desc_he || selectedItem.desc_en ? (
-                <div className="pt-2 text-sm leading-relaxed text-cream/80 text-right space-y-2">
+                <div className="text-sm sm:text-base leading-relaxed text-obsidian/70 text-right font-medium">
                   {(() => {
                     const desc =
                       locale === 'he'
@@ -663,36 +800,33 @@ export default function MenuPage({ categories }: Props) {
                         : locale === 'en'
                         ? selectedItem.desc_en || selectedItem.desc_ar
                         : selectedItem.desc_ar;
-                    const descIsArabic =
-                      locale === 'ar' ||
-                      (locale === 'he' && !selectedItem.desc_he) ||
-                      (locale === 'en' && !selectedItem.desc_en);
-                    return desc ? (descIsArabic ? <p lang="ar">{desc}</p> : <p>{desc}</p>) : null;
+                    return desc ? <p lang="ar">{desc}</p> : null;
                   })()}
                 </div>
               ) : null}
 
+              {/* Artisan Section Divider */}
+              <div className="h-px w-full bg-gold/10" />
+
+              {/* Variants Section */}
               {(() => {
-                // Show size/type options inside the modal for variant categories (salads, pastries)
                 const categoryForItem = mergedCategories.find((cat) =>
                   (cat.menu_items ?? []).some((i) => i.id === selectedItem.id),
                 );
                 if (!categoryForItem || !isVariantCategory(categoryForItem)) return null;
 
                 const allItemsInCategory = (categoryForItem.menu_items ?? []).filter((i) => i.is_available);
-                const baseMatch = selectedItem.name_ar.match(/^(.*)\((.+)\)\s*$/);
-                const baseName = (baseMatch ? baseMatch[1] : selectedItem.name_ar).trim();
+                const baseName = selectedItem.name_ar.replace(/\((.+)\)\s*$/, '').trim();
 
-                const itemsForBase = allItemsInCategory.filter((i) => {
-                  const m = i.name_ar.match(/^(.*)\((.+)\)\s*$/);
-                  const b = (m ? m[1] : i.name_ar).trim();
-                  return b === baseName;
-                });
+                const itemsForBase = allItemsInCategory.filter((i) => 
+                  i.name_ar.replace(/\((.+)\)\s*$/, '').trim() === baseName
+                );
 
                 if (itemsForBase.length === 0) return null;
 
                 return (
-                  <div className="pt-4">
+                  <div className="space-y-4">
+                    <p className="text-xs font-bold tracking-[0.2em] text-gold-dark/70 uppercase text-center">{t('optional_note')}</p>
                     <VariantGrid
                       items={itemsForBase}
                       onAdded={(info) => setLastAdded(info)}
@@ -701,8 +835,8 @@ export default function MenuPage({ categories }: Props) {
                 );
               })()}
 
+              {/* Quantity Selection for Unit items */}
               {(() => {
-                // For non-variant dishes, allow selecting quantity and adding to cart from the modal
                 const categoryForItem = mergedCategories.find((cat) =>
                   (cat.menu_items ?? []).some((i) => i.id === selectedItem.id),
                 );
@@ -725,14 +859,14 @@ export default function MenuPage({ categories }: Props) {
                 };
 
                 return (
-                  <div className="pt-4 mt-2 border-t border-gold/10 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-2">
+                  <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div className="flex items-center gap-3 bg-white p-2 rounded-2xl border border-gold/10 shadow-sm">
                       <button
                         type="button"
-                        className="w-8 h-8 flex items-center justify-center border border-gold/30 text-cream/80 rounded-sm hover:bg-gold/10"
+                        className="w-10 h-10 flex items-center justify-center text-obsidian bg-cream-100 hover:bg-gold-DEFAULT hover:text-white rounded-xl transition-all font-black text-lg"
                         onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                       >
-                        -
+                        −
                       </button>
                       <input
                         type="number"
@@ -740,17 +874,14 @@ export default function MenuPage({ categories }: Props) {
                         value={quantity}
                         onChange={(e) => {
                           const val = Number(e.target.value);
-                          if (Number.isNaN(val) || val <= 0) {
-                            setQuantity(1);
-                          } else {
-                            setQuantity(Math.floor(val));
-                          }
+                          if (Number.isNaN(val) || val <= 0) setQuantity(1);
+                          else setQuantity(Math.floor(val));
                         }}
-                        className="w-14 text-center bg-obsidian-200 border border-gold/25 text-sm text-cream/90 rounded-sm py-1"
+                        className="w-16 text-center font-black text-xl text-obsidian bg-transparent focus:outline-none"
                       />
                       <button
                         type="button"
-                        className="w-8 h-8 flex items-center justify-center border border-gold/30 text-cream/80 rounded-sm hover:bg-gold/10"
+                        className="w-10 h-10 flex items-center justify-center text-obsidian bg-cream-100 hover:bg-gold-DEFAULT hover:text-white rounded-xl transition-all font-black text-lg"
                         onClick={() => setQuantity((q) => q + 1)}
                       >
                         +
@@ -759,14 +890,13 @@ export default function MenuPage({ categories }: Props) {
                     <button
                       type="button"
                       onClick={handleAdd}
-                      className="px-4 py-2 text-xs sm:text-sm rounded-sm border border-gold/40 bg-gold/10 text-gold-DEFAULT hover:bg-gold/20 transition-colors"
+                      className="w-full sm:w-auto px-10 py-4 text-sm font-black rounded-2xl bg-gold-dark text-white hover:bg-gold-DEFAULT transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
                     >
                       <span lang="ar">إضافة إلى السلة</span>
                     </button>
                   </div>
                 );
               })()}
-
             </div>
           </div>
         </div>

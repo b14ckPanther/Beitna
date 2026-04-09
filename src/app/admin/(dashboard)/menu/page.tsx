@@ -6,6 +6,7 @@ import { deleteMenuItem } from '@/lib/actions/menu-items';
 import type { MenuItem } from '@/lib/supabase';
 import DeleteButton from '@/components/admin/DeleteButton';
 import { Plus, Pencil, ImageOff } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export const metadata = { title: 'Menu Items' };
 
@@ -56,21 +57,21 @@ export default async function MenuItemsPage({
   const grouped = groupByBaseName(items as unknown as MenuItem[]);
 
   const tagColors: Record<string, string> = {
-    popular: 'bg-orange-400/10 text-orange-400 border-orange-400/20',
-    signature: 'bg-gold/10 text-gold-DEFAULT border-gold/20',
-    new: 'bg-emerald-400/10 text-emerald-400 border-emerald-400/20',
+    popular: 'bg-amber-50 text-amber-700 border-amber-200',
+    signature: 'bg-gold/10 text-gold-dark border-gold/20',
+    new: 'bg-emerald-50 text-emerald-700 border-emerald-200',
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-cream/90">Menu Items</h1>
-          <p className="text-cream/40 text-sm mt-1">{grouped.length} items (grouped)</p>
+          <h1 className="text-2xl font-black text-obsidian tracking-tight">Menu Items</h1>
+          <p className="text-obsidian/40 text-sm mt-1">{grouped.length} artisan dishes listed</p>
         </div>
-        <Link href="/admin/menu/new" className="btn-gold px-5 py-2.5 text-sm font-bold tracking-widest rounded-sm uppercase flex items-center gap-2">
-          <Plus size={14} />
-          Add Item
+        <Link href="/admin/menu/new" className="btn-gold px-6 py-3 text-xs font-black tracking-[0.2em] rounded-sm uppercase flex items-center gap-2 shadow-lg hover:scale-[1.02] transition-transform">
+          <Plus size={14} strokeWidth={3} />
+          Add New Dish
         </Link>
       </div>
 
@@ -78,7 +79,12 @@ export default async function MenuItemsPage({
       <div className="flex gap-2 flex-wrap">
         <Link
           href="/admin/menu"
-          className={`px-3 py-1.5 text-xs font-medium rounded-sm border transition-all ${!catFilter ? 'bg-gold/10 text-gold-DEFAULT border-gold/30' : 'border-gold/10 text-cream/40 hover:border-gold/25 hover:text-cream/60'}`}
+          className={cn(
+            "px-4 py-2 text-[10px] font-black rounded-sm border transition-all uppercase tracking-widest",
+            !catFilter 
+              ? "bg-gold-dark text-white border-gold-dark shadow-md" 
+              : "bg-white border-gold/15 text-obsidian/40 hover:bg-gold/5 hover:text-obsidian/60"
+          )}
         >
           All
         </Link>
@@ -86,7 +92,12 @@ export default async function MenuItemsPage({
           <Link
             key={c.id}
             href={`/admin/menu?cat=${c.id}`}
-            className={`px-3 py-1.5 text-xs font-medium rounded-sm border transition-all ${catFilter === c.id ? 'bg-gold/10 text-gold-DEFAULT border-gold/30' : 'border-gold/10 text-cream/40 hover:border-gold/25 hover:text-cream/60'}`}
+            className={cn(
+              "px-4 py-2 text-[10px] font-black rounded-sm border transition-all uppercase tracking-widest",
+              catFilter === c.id 
+                ? "bg-gold-dark text-white border-gold-dark shadow-md" 
+                : "bg-white border-gold/15 text-obsidian/40 hover:bg-gold/5 hover:text-obsidian/60"
+            )}
             dir="rtl"
           >
             <span lang="ar">{c.name_ar}</span>
@@ -96,14 +107,14 @@ export default async function MenuItemsPage({
 
       {/* Items Grid (grouped by base dish name) */}
       {grouped.length === 0 ? (
-        <div className="glass-card text-center py-20">
-          <p className="text-cream/30 text-sm">No items found.</p>
-          <Link href="/admin/menu/new" className="text-gold-DEFAULT text-sm hover:underline mt-2 inline-block">
-            Add your first item
+        <div className="bg-white border border-gold/10 rounded-sm text-center py-20 shadow-sm">
+          <p className="text-obsidian/30 text-sm italic">The pantry is currently empty.</p>
+          <Link href="/admin/menu/new" className="text-gold-dark font-bold text-sm hover:underline mt-2 inline-block">
+            Craft your first menu item
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
           {grouped.map((group) => {
             const item = group.representative;
             const hasVariants = group.items.length > 1;
@@ -114,67 +125,69 @@ export default async function MenuItemsPage({
                   )}₪`
                 : `${item.price}₪`;
             return (
-            <div key={group.baseName} className="glass-card overflow-hidden group">
-              {/* Image */}
-              <div className="relative aspect-video bg-obsidian-200 border-b border-gold/8 flex items-center justify-center">
-                {item.image_url ? (
-                  <Image
-                    src={item.image_url}
-                    alt={item.name_ar}
-                    fill
-                    className="object-contain object-center bg-obsidian-200"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <ImageOff size={20} className="text-cream/10" strokeWidth={1} />
+              <div key={group.baseName} className="bg-white border border-gold/10 shadow-sm hover:shadow-md transition-all duration-300 rounded-sm overflow-hidden group">
+                {/* Image */}
+                <div className="relative aspect-[4/3] bg-gray-50 border-b border-gold/5 flex items-center justify-center overflow-hidden">
+                  {item.image_url ? (
+                    <Image
+                      src={item.image_url}
+                      alt={item.name_ar}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <ImageOff size={24} className="text-obsidian/5" strokeWidth={1} />
+                    </div>
+                  )}
+                  {/* Actions overlay */}
+                  <div className="absolute inset-0 bg-obsidian/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+                    <Link href={`/admin/menu/${item.id}`} className="p-3 bg-white text-gold-dark hover:bg-gold-dark hover:text-white rounded-full shadow-xl transition-all hover:scale-110">
+                      <Pencil size={18} strokeWidth={2} />
+                    </Link>
+                    <DeleteButton
+                      confirmMessage="Are you sure you want to delete this dish and all its variants? This action cannot be undone."
+                      action={async () => {
+                        'use server';
+                        for (const variant of group.items) {
+                          await deleteMenuItem(variant.id);
+                        }
+                      }}
+                    />
                   </div>
-                )}
-                {/* Actions overlay */}
-                <div className="absolute inset-0 bg-obsidian/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
-                  <Link href={`/admin/menu/${item.id}`} className="p-2 bg-obsidian-50 border border-gold/30 text-gold-DEFAULT hover:bg-gold/10 rounded-sm transition-all">
-                    <Pencil size={14} strokeWidth={1.5} />
-                  </Link>
-                  <DeleteButton
-                    confirmMessage="Are you sure you want to delete this dish and all its variants? This action cannot be undone."
-                    action={async () => {
-                      'use server';
-                      for (const variant of group.items) {
-                        await deleteMenuItem(variant.id);
-                      }
-                    }}
-                  />
+                  {/* Tag */}
+                  {item.tag && (
+                    <span className={cn('absolute top-3 right-3 text-[9px] font-black tracking-widest uppercase border px-2 py-0.5 rounded-sm shadow-sm', tagColors[item.tag] || tagColors.signature)}>
+                      {item.tag}
+                    </span>
+                  )}
+                  {!item.is_available && (
+                    <span className="absolute top-3 left-3 text-[9px] font-black tracking-widest uppercase border px-2 py-0.5 bg-red-50 text-red-700 border-red-200 shadow-sm">
+                      Hidden
+                    </span>
+                  )}
                 </div>
-                {/* Tag */}
-                {item.tag && (
-                  <span className={`absolute top-2 right-2 text-[9px] font-bold tracking-widest uppercase border px-1.5 py-0.5 ${tagColors[item.tag]}`}>
-                    {item.tag}
-                  </span>
-                )}
-                {!item.is_available && (
-                  <span className="absolute top-2 left-2 text-[9px] font-bold tracking-widest uppercase border px-1.5 py-0.5 bg-red-400/10 text-red-400 border-red-400/20">
-                    Hidden
-                  </span>
-                )}
-              </div>
-              {/* Content */}
-              <div className="p-4">
-                <div className="flex items-start justify-between gap-2 mb-1">
-                  <span className="text-gold-DEFAULT font-bold">
-                    {priceLabel}
-                    {hasVariants && <span className="text-cream/35 text-[10px] ml-1">(variants)</span>}
-                  </span>
-                  <h3 className="text-cream/90 text-sm font-semibold text-right" dir="rtl">
-                    <span lang="ar">{group.baseName}</span>
-                  </h3>
+                {/* Content */}
+                <div className="p-5">
+                  <div className="flex items-start justify-between gap-4 mb-2">
+                    <div className="flex flex-col">
+                      <span className="text-gold-dark font-black text-lg font-mono">
+                        {priceLabel}
+                      </span>
+                      {hasVariants && <span className="text-obsidian/30 text-[9px] uppercase font-bold tracking-tighter">Multiple Variants</span>}
+                    </div>
+                    <h3 className="text-obsidian text-base font-black text-right leading-tight" dir="rtl">
+                      <span lang="ar">{group.baseName}</span>
+                    </h3>
+                  </div>
+                  {item.desc_ar && (
+                    <p className="text-obsidian/40 text-[11px] text-right line-clamp-2 leading-relaxed italic" dir="rtl">
+                      <span lang="ar">{item.desc_ar}</span>
+                    </p>
+                  )}
                 </div>
-                {item.desc_ar && (
-                  <p className="text-cream/35 text-xs text-right line-clamp-2" dir="rtl">
-                    <span lang="ar">{item.desc_ar}</span>
-                  </p>
-                )}
               </div>
-            </div>
-          )})}
+            )})}
         </div>
       )}
     </div>

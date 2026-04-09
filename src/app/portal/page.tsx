@@ -99,22 +99,22 @@ export default function PortalPage() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-obsidian">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#FDFCF9]">
       {/* Ambient radial glows */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-gold-600/10 blur-[120px]" />
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[400px] rounded-full bg-gold-500/8 blur-[100px]" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-gold-400/10 blur-[120px]" />
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[400px] rounded-full bg-gold-300/10 blur-[100px]" />
       </div>
 
       {/* Particle canvas */}
       <canvas
         ref={canvasRef}
-        className="pointer-events-none absolute inset-0 z-0"
+        className="pointer-events-none absolute inset-0 z-0 opacity-40"
       />
 
       {/* Texture grain overlay */}
       <div
-        className="pointer-events-none absolute inset-0 z-0 opacity-[0.03]"
+        className="pointer-events-none absolute inset-0 z-0 opacity-[0.05]"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
           backgroundSize: '200px 200px',
@@ -122,55 +122,45 @@ export default function PortalPage() {
       />
 
       {/* Card */}
-      <div className="relative z-10 w-full max-w-md mx-4">
-        {/* Gold shimmer border */}
-        <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-b from-gold-500/50 via-gold-700/15 to-gold-500/10" />
-
-        <div className="relative rounded-2xl bg-gradient-to-b from-[#0f2019] to-[#071611] px-8 py-12 shadow-[0_40px_80px_rgba(0,0,0,0.7)]">
+      <div className="relative z-10 w-full max-w-sm mx-4">
+        <div className="bg-white border border-gold/15 p-12 shadow-[0_30px_100px_rgba(0,0,0,0.06)] rounded-sm relative group">
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gold-gradient" />
 
           {/* Logo */}
           <div className="flex flex-col items-center mb-10">
-            <div className="relative mb-6">
-              <div className="absolute -inset-4 rounded-full bg-gold-500/10 blur-xl" />
+            <div className="relative w-32 h-32 mb-8">
               <Image
                 src="/logo.png?v=beitna1"
                 alt="بيتنا"
-                width={128}
-                height={128}
-                className="relative rounded-full object-contain"
+                fill
+                className="brightness-[0.15] contrast-[1.5] object-contain"
                 priority
               />
             </div>
 
-            <h1 className="text-3xl font-bold tracking-wide text-gold-400 mb-1" lang="ar">
-              بيتنا
+            <h1 className="text-2xl font-black tracking-tight text-obsidian uppercase mb-1">
+              Beitna Portal
             </h1>
-            <p className="text-xs tracking-[0.25em] uppercase text-gold-600/60 font-light" lang="ar">
+            <p className="text-[10px] tracking-[0.4em] uppercase text-gold-dark font-black" lang="ar">
               بوابة الإدارة
             </p>
 
             {/* Divider */}
-            <div className="mt-6 flex items-center gap-3 w-full">
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent to-gold-700/30" />
-              <Lock size={10} className="text-gold-700/50" />
-              <div className="flex-1 h-px bg-gradient-to-l from-transparent to-gold-700/30" />
+            <div className="mt-8 flex items-center gap-4 w-full">
+              <div className="flex-1 h-px bg-gold/10" />
+              <Lock size={12} className="text-gold-dark/30" />
+              <div className="flex-1 h-px bg-gold/10" />
             </div>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="block text-xs tracking-[0.2em] uppercase text-gold-600/70 text-right" lang="ar">
-                كلمة المرور
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="space-y-3">
+              <label className="block text-[10px] font-black tracking-[0.3em] uppercase text-obsidian/40 text-right" lang="ar">
+                كلمة المرور الآمنة
               </label>
 
-              <div
-                className={`relative transition-all duration-300 ${
-                  focused
-                    ? 'shadow-[0_0_0_1px_rgba(212,175,55,0.4),0_0_20px_rgba(212,175,55,0.08)]'
-                    : 'shadow-[0_0_0_1px_rgba(212,175,55,0.12)]'
-                } rounded-xl`}
-              >
+              <div className="relative group/input">
                 <input
                   ref={inputRef}
                   type={showPassword ? 'text' : 'password'}
@@ -178,24 +168,24 @@ export default function PortalPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   onFocus={() => setFocused(true)}
                   onBlur={() => setFocused(false)}
-                  placeholder="••••••••••••"
+                  placeholder="••••••••"
                   dir="ltr"
                   required
-                  className="w-full bg-[#0d0a05]/80 text-cream placeholder-gold-700/30 rounded-xl px-4 py-4 pr-12 text-center text-lg tracking-[0.3em] focus:outline-none transition-colors duration-200"
+                  className="w-full bg-gray-50 text-obsidian font-black rounded-sm border border-gold/15 px-4 py-4 pr-12 text-center text-xl tracking-[0.4em] focus:bg-white focus:border-gold-dark/50 transition-all duration-300 outline-none"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gold-700/40 hover:text-gold-500/70 transition-colors"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gold-dark/30 hover:text-gold-dark transition-colors"
                   tabIndex={-1}
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
 
               {/* Error */}
               {error && (
-                <p className="text-center text-xs text-red-400/80 pt-1 animate-fade-up">
+                <p className="text-center text-xs text-red-600 font-bold pt-2 animate-shake">
                   <span lang="ar">{error}</span>
                 </p>
               )}
@@ -204,30 +194,26 @@ export default function PortalPage() {
             <button
               type="submit"
               disabled={loading || !password}
-              className="group relative w-full overflow-hidden rounded-xl py-4 text-sm font-semibold tracking-[0.2em] uppercase transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="group relative w-full overflow-hidden rounded-sm py-5 text-xs font-black tracking-[0.3em] uppercase transition-all duration-500 disabled:opacity-30 disabled:grayscale btn-gold"
             >
-              {/* Base gradient */}
-              <span className="absolute inset-0 bg-gradient-to-r from-gold-700 via-gold-500 to-gold-700 transition-all duration-500" />
-              {/* Shimmer sweep */}
-              <span className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
-
-              <span className="relative flex items-center justify-center gap-2 text-obsidian-900">
-                {loading ? (
-                  <>
-                    <Loader2 size={15} className="animate-spin" />
-                    <span lang="ar">جاري التحقق...</span>
-                  </>
-                ) : (
-                  <span lang="ar">دخول</span>
-                )}
-              </span>
+              {loading ? (
+                <div className="flex items-center justify-center gap-3">
+                  <Loader2 size={16} className="animate-spin" />
+                  <span lang="ar">جاري التحقق...</span>
+                </div>
+              ) : (
+                <span lang="ar">دخول النظام</span>
+              )}
             </button>
           </form>
 
           {/* Footer stamp */}
-          <p className="mt-10 text-center text-[10px] tracking-[0.15em] text-gold-700/25 uppercase">
-            Beitna Home Kitchen &mdash; Private Access
-          </p>
+          <div className="mt-12 flex flex-col items-center gap-4">
+             <div className="h-px w-12 bg-gold/10" />
+             <p className="text-center text-[9px] font-black tracking-[0.2em] text-obsidian/20 uppercase leading-loose">
+               Authorized Management Only <br/> Beitna Signature Suite
+             </p>
+          </div>
         </div>
       </div>
     </div>

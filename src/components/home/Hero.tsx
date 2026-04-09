@@ -8,7 +8,6 @@ import { ChevronDown } from 'lucide-react';
 
 export default function Hero() {
   const t = useTranslations('hero');
-  const tNav = useTranslations('nav');
   const [loaded, setLoaded] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -17,7 +16,7 @@ export default function Hero() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Particle canvas
+  // Particle canvas - Updated for Light Theme
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -35,17 +34,21 @@ export default function Hero() {
       x: number; y: number; r: number;
       vx: number; vy: number; alpha: number;
       targetAlpha: number;
+      color: string;
     }> = [];
 
+    // Subtle Forest Green and Gold particles
     for (let i = 0; i < 60; i++) {
+      const isGold = Math.random() > 0.5;
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        r: Math.random() * 1.2 + 0.3,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: -Math.random() * 0.4 - 0.1,
+        r: Math.random() * 1.5 + 0.5,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: -Math.random() * 0.3 - 0.1,
         alpha: 0,
-        targetAlpha: Math.random() * 0.5 + 0.1,
+        targetAlpha: isGold ? Math.random() * 0.3 + 0.1 : Math.random() * 0.1 + 0.05,
+        color: isGold ? '201, 165, 106' : '26, 36, 33',
       });
     }
 
@@ -61,12 +64,10 @@ export default function Hero() {
           p.y = canvas.height + 10;
           p.x = Math.random() * canvas.width;
         }
-        if (p.x < -10) p.x = canvas.width + 10;
-        if (p.x > canvas.width + 10) p.x = -10;
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(201, 165, 106, ${p.alpha})`;
+        ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
         ctx.fill();
       });
       animId = requestAnimationFrame(draw);
@@ -80,39 +81,45 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-obsidian lg:pt-10">
-      {/* Particle canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-0" />
+    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#FDFCF9] lg:pt-10">
+      {/* Background Masterpiece Visual */}
+      <div 
+        className={`absolute inset-0 z-0 transition-all duration-1500 ease-out ${loaded ? 'opacity-[0.15] scale-100 blur-0' : 'opacity-0 scale-110 blur-xl'}`}
+      >
+        <Image 
+          src="/hero-platter.png" 
+          alt="Artisan Feast" 
+          fill 
+          className="object-cover object-center translate-y-20 lg:translate-y-0"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FDFCF9] via-transparent to-[#FDFCF9]" />
+      </div>
 
-      {/* Radial ambient lights */}
-      <div className="absolute inset-0 pointer-events-none z-0">
+      {/* Particle canvas */}
+      <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-1" />
+
+      {/* Radial soft lights for depth */}
+      <div className="absolute inset-0 pointer-events-none z-1">
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-[0.08]"
-          style={{ background: 'radial-gradient(circle, #C9A56A, transparent 65%)' }}
-        />
-        <div
-          className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full opacity-[0.06]"
-          style={{ background: 'radial-gradient(circle, #F4C095, transparent 70%)' }}
-        />
-        <div
-          className="absolute bottom-0 left-0 w-[320px] h-[320px] rounded-full opacity-[0.14]"
-          style={{ background: 'radial-gradient(circle, #3D5A40, transparent 70%)' }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rounded-full opacity-[0.2]"
+          style={{ background: 'radial-gradient(circle, #C9A56A15, transparent 75%)' }}
         />
       </div>
 
-      {/* Decorative corner ornaments */}
-      <div className="absolute top-24 left-8 opacity-10 hidden lg:block">
+      {/* Decorative Ornaments - Dark for contrast */}
+      <div className="absolute top-24 left-8 opacity-20 hidden lg:block z-10 transition-all duration-1000 delay-500">
         <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-          <path d="M0 80 L0 0 L80 0" stroke="#C9A56A" strokeWidth="0.5" fill="none"/>
-          <path d="M8 80 L8 8 L80 8" stroke="#C9A56A" strokeWidth="0.5" fill="none" opacity="0.5"/>
-          <circle cx="0" cy="0" r="4" fill="#C9A56A" opacity="0.6"/>
+          <path d="M0 80 L0 0 L80 0" stroke="#1A2421" strokeWidth="0.5" fill="none"/>
+          <path d="M8 80 L8 8 L80 8" stroke="#1A2421" strokeWidth="0.5" fill="none" opacity="0.3"/>
+          <circle cx="0" cy="0" r="4" fill="#C9A56A" opacity="0.8"/>
         </svg>
       </div>
-      <div className="absolute top-24 right-8 opacity-10 hidden lg:block">
+      <div className="absolute top-24 right-8 opacity-20 hidden lg:block z-10 transition-all duration-1000 delay-500">
         <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-          <path d="M80 80 L80 0 L0 0" stroke="#C9A56A" strokeWidth="0.5" fill="none"/>
-          <path d="M72 80 L72 8 L0 8" stroke="#C9A56A" strokeWidth="0.5" fill="none" opacity="0.5"/>
-          <circle cx="80" cy="0" r="4" fill="#C9A56A" opacity="0.6"/>
+          <path d="M80 80 L80 0 L0 0" stroke="#1A2421" strokeWidth="0.5" fill="none"/>
+          <path d="M72 80 L72 8 L0 8" stroke="#1A2421" strokeWidth="0.5" fill="none" opacity="0.3"/>
+          <circle cx="80" cy="0" r="4" fill="#C9A56A" opacity="0.8"/>
         </svg>
       </div>
 
@@ -123,13 +130,13 @@ export default function Hero() {
         <div
           className={`transition-all duration-1000 delay-200 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
         >
-          <div className="relative w-32 h-32 sm:w-44 sm:h-44 mx-auto mb-8 animate-float">
-            <div className="absolute inset-0 rounded-full bg-gold-DEFAULT/5 blur-2xl scale-150" />
+          <div className="relative w-32 h-32 sm:w-48 sm:h-48 mx-auto mb-10 animate-float">
+            <div className="absolute inset-0 rounded-full bg-gold-DEFAULT/10 blur-3xl scale-110" />
             <Image
               src="/logo.png?v=beitna1"
               alt="بيتنا Beitna"
               fill
-              className="object-contain relative z-10 drop-shadow-[0_0_30px_rgba(201,165,106,0.5)]"
+              className="object-contain relative z-10 brightness-[0.2] contrast-[1.5]"
               priority
             />
           </div>
@@ -139,10 +146,10 @@ export default function Hero() {
         <div
           className={`transition-all duration-1000 delay-400 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
         >
-          <div className="inline-flex items-center gap-3 mb-6">
-            <div className="w-8 h-px bg-gold-DEFAULT/40" />
-            <span className="section-label text-[0.65rem]">{t('tagline')}</span>
-            <div className="w-8 h-px bg-gold-DEFAULT/40" />
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <div className="h-px w-10 sm:w-16 bg-gold-DEFAULT/40" />
+            <span className="text-xs font-bold tracking-[0.4em] uppercase text-gold-dark/80">{t('tagline')}</span>
+            <div className="h-px w-10 sm:w-16 bg-gold-DEFAULT/40" />
           </div>
         </div>
 
@@ -150,8 +157,8 @@ export default function Hero() {
         <div
           className={`transition-all duration-1000 delay-700 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
         >
-          <p className="text-cream/60 text-lg sm:text-xl font-light mb-12 max-w-md leading-relaxed">
-            {t('subtitle')}
+          <p className="text-obsidian/60 text-lg sm:text-2xl font-light mb-14 max-w-lg leading-relaxed italic">
+            "{t('subtitle')}"
           </p>
         </div>
 
@@ -161,7 +168,7 @@ export default function Hero() {
         >
           <Link
             href="/menu"
-            className="btn-gold px-8 py-4 text-sm font-bold tracking-[0.2em] rounded-sm uppercase min-w-[200px] text-center"
+            className="btn-gold px-12 py-5 text-sm font-bold tracking-[0.3em] rounded-sm uppercase min-w-[240px] text-center shadow-xl hover:shadow-gold-DEFAULT/20 transition-all duration-500 hover:-translate-y-1"
           >
             {t('cta_reserve')}
           </Link>
@@ -169,17 +176,17 @@ export default function Hero() {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10">
-        <span className="section-label text-[0.6rem] text-cream/30">{t('scroll_hint')}</span>
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-10 opacity-40">
+        <span className="font-bold text-[0.7rem] uppercase tracking-widest text-obsidian/40">{t('scroll_hint')}</span>
         <ChevronDown
-          size={16}
-          className="text-gold-DEFAULT/50 animate-bounce"
-          strokeWidth={1.5}
+          size={18}
+          className="text-gold-dark animate-bounce"
+          strokeWidth={2}
         />
       </div>
 
-      {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-obsidian to-transparent z-5 pointer-events-none" />
+      {/* Bottom Artisan Fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#FDFCF9] to-transparent z-5 pointer-events-none" />
     </section>
   );
 }
