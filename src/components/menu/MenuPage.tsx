@@ -74,8 +74,8 @@ function MenuItemCard({
       ref={ref}
       className={cn(
         'premium-card mini-tile-shadow flex flex-col transition-all duration-700 cursor-pointer group relative',
-        // Mobile dimensions (Definitive 2-across) vs Desktop
-        'w-[185px] sm:w-[240px] h-auto sm:h-[400px]',
+        // Forced square aspect ratio across all devices
+        'w-[185px] sm:w-[280px] aspect-square',
         'rounded-3xl sm:rounded-[2.5rem] overflow-hidden bg-white',
         inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 sm:translate-y-12'
       )}
@@ -83,8 +83,8 @@ function MenuItemCard({
       tabIndex={onClick ? 0 : -1}
       onClick={onClick}
     >
-      {/* Image Section */}
-      <div className="relative h-[120px] sm:h-[200px] w-full overflow-hidden bg-cream-100">
+      {/* Image Section - Optimized for high-fidelity square view */}
+      <div className="relative h-[110px] sm:h-[165px] w-full overflow-hidden bg-cream-100">
         {item.image_url && !imgError ? (
           <Image
             src={item.image_url as string}
@@ -99,18 +99,18 @@ function MenuItemCard({
           </div>
         )}
         
-        {/* Floating Price Badge - Refined for Artisan Look */}
-        <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 group-hover:scale-110 transition-transform duration-500">
-          <div className="bg-white/90 backdrop-blur-md border border-gold/20 px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl flex flex-col items-center group-hover:bg-gold-DEFAULT group-hover:text-white transition-all duration-500 shadow-lg">
+        {/* Floating Price Badge */}
+        <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 group-hover:scale-110 transition-transform duration-500">
+          <div className="bg-white/90 backdrop-blur-md border border-gold/20 px-2 py-1 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl flex flex-col items-center group-hover:bg-gold-DEFAULT group-hover:text-white transition-all duration-500 shadow-lg">
              <div className="flex items-center gap-0.5 sm:gap-1">
-               <span className="text-xs sm:text-lg font-black leading-none text-obsidian">{itemIsSalad ? (locale === 'ar' ? 'يبدأ من' : 'Starts at') : ''} {item.price}</span>
+               <span className="text-xs sm:text-base font-black leading-none text-obsidian">{itemIsSalad ? (locale === 'ar' ? 'يبدأ من' : 'Starts at') : ''} {item.price}</span>
                <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-tighter text-obsidian/70">₪</span>
              </div>
           </div>
         </div>
 
         {item.tag && (
-          <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 scale-75 sm:scale-100 origin-top-left">
+          <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 scale-[0.7] sm:scale-90 origin-top-left">
             <TagBadge tag={item.tag} />
           </div>
         )}
@@ -118,27 +118,27 @@ function MenuItemCard({
         <div className="absolute inset-0 bg-gradient-to-t from-obsidian/20 via-transparent to-transparent opacity-40 group-hover:opacity-20 transition-opacity" />
       </div>
 
-      {/* Content Section */}
-      <div className="p-3 sm:p-5 pt-2 sm:pt-4 flex flex-col flex-1 text-right">
-        <div className="mb-1 sm:mb-2">
-          <h3 className="text-obsidian font-bold text-sm sm:text-base leading-tight group-hover:text-gold-DEFAULT transition-colors line-clamp-2 sm:line-clamp-1">
+      {/* Content Section - Compact and elegant text layout */}
+      <div className="p-3 sm:px-5 sm:py-4 pt-1 sm:pt-3 flex flex-col flex-1 text-right">
+        <div className="mb-0.5 sm:mb-1.5">
+          <h3 className="text-obsidian font-bold text-xs sm:text-base leading-tight group-hover:text-gold-DEFAULT transition-colors line-clamp-1">
             {nameIsArabic ? <span lang="ar">{name}</span> : name}
           </h3>
           {locale === 'ar' && item.name_he && (
-            <p className="hidden sm:block text-obsidian/30 text-[10px] mt-0.5 font-heebo line-clamp-1" dir="rtl">
+            <p className="hidden sm:block text-obsidian/30 text-[9px] mt-0.5 font-heebo line-clamp-1" dir="rtl">
               {item.name_he}
             </p>
           )}
         </div>
 
-        {/* Description - Adjusted for 2-across mobile */}
+        {/* Description - Adjusted for square constraints */}
         {desc && (
-          <p className="text-obsidian/50 text-[10px] sm:text-[11px] leading-relaxed line-clamp-2 min-h-[2.2rem] mb-2 font-medium">
+          <p className="text-obsidian/50 text-[9px] sm:text-[11px] leading-relaxed line-clamp-2 min-h-[1.8rem] sm:min-h-[2.4rem] mb-1 sm:mb-2 font-medium">
             {descIsArabic ? <span lang="ar">{desc}</span> : desc}
           </p>
         )}
 
-        <div className="mt-auto flex items-center justify-between gap-1 sm:gap-3">
+        <div className="mt-auto flex items-center justify-between gap-1 sm:gap-2">
           <div className="flex-1">
             {hintText && (
               <span className="text-gold-dark/60 text-[8px] uppercase font-bold tracking-[0.2em] block text-left" lang="ar">
