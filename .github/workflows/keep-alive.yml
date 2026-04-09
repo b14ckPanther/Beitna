@@ -1,0 +1,21 @@
+name: Supabase Keep-Alive Pulse
+
+on:
+  schedule:
+    # Runs every 12 hours (at 00:00 and 12:00 UTC)
+    - cron: '0 */12 * * *'
+  workflow_dispatch: # Allows manual triggering for testing
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Pulse to Beitna
+        run: |
+          if [ -z "${{ secrets.SITE_URL }}" ]; then
+            echo "Error: SITE_URL secret is not set in GitHub Repository Secrets."
+            exit 1
+          fi
+          
+          # Ping the keep-alive endpoint with the secret key
+          curl -f "${{ secrets.SITE_URL }}/api/keep-alive?key=${{ secrets.KEEP_ALIVE_KEY }}"
